@@ -1,0 +1,39 @@
+MR VISUALCRAFT — FIXED BUILD
+
+IMPORTANT:
+If you double-click index.html, the design will now load because CSS, JS and images use relative paths.
+For the FULL website + backend, use start.bat or run:
+  npm install
+  npm start
+Then open http://localhost:3000
+
+If you use index.html directly (file://), page navigation works, visuals work, and contact submissions are saved offline in the browser. The backend/admin API requires the Node server.
+
+Main pages:
+index.html
+work.html
+services.html
+process.html
+about.html
+contact.html
+cv.html
+admin.html
+
+Project pages:
+project_nova.html
+project_urban.html
+project_smart.html
+project_growth.html
+project_content.html
+project_brand.html
+
+Service pages:
+service_web.html
+service_design.html
+service_ai.html
+service_marketing.html
+
+
+Theme: Use the sun/moon button in the header to switch between Dark and Light mode. Your choice is saved in the browser.
+
+Hero typing effect now starts after the normal interface appears; no full-screen intro overlay.
