@@ -1764,3 +1764,10 @@ html.skipHomeIntro .heroTitleType{visibility:visible !important;}
 @media (max-width:700px){
   .luxVisual .heroPerson{top:10px !important;}
 }
+
+/* Smooth JS typewriter */
+.heroTitleType .typeChar.shown{
+  animation:none !important;
+  opacity:1 !important;
+  transform:none !important;
+}
