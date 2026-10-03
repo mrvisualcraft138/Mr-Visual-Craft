@@ -1563,7 +1563,7 @@ html.light-theme header.nav .links.open a.active{
 
 
 /* =========================================
-   HERO TITLE — CLEAR TYPEWRITER EFFECT
+   HERO TITLE — SMOOTH JS TYPEWRITER
    ========================================= */
 .heroTitleType{
   margin:22px 0;
@@ -1572,35 +1572,31 @@ html.light-theme header.nav .links.open a.active{
   letter-spacing:-.065em;
   font-weight:950;
   overflow:visible;
+  visibility:hidden;
 }
-.heroTitleType .typeWord{display:inline-block;white-space:nowrap;}
+
+.heroTitleType.typingStarted{
+  visibility:visible;
+}
+
+.heroTitleType .typeWord{
+  display:inline-block;
+  white-space:nowrap;
+}
+
 .heroTitleType .typeChar{
   display:inline-block;
-  opacity:0;
-  transform:translateY(8px);
-  animation:heroTypeIn .18s ease-out forwards;
+  opacity:1;
+  transform:none;
+  animation:none !important;
 }
-.heroTitleType .typeChar.shown{opacity:1;transform:none;}
-@keyframes heroTypeIn{to{opacity:1;transform:translateY(0);}}
-@keyframes heroCursorBlink{50%{opacity:0;}}
-@media(max-width:600px){
-  .heroTitleType{font-size:52px;margin:22px 0;}
-  }
-@media(prefers-reduced-motion:reduce){
-  .heroTitleType .typeChar{animation:none;opacity:1;transform:none;}
-  }
 
-
-/* Hero typewriter: title appears after the opening identity screen. */
-.heroTitleType{visibility:hidden;}
-.heroTitleType.typingStarted{visibility:visible;}
-.heroTitleType .typeChar{
-  display:inline-block;
-  opacity:0;
-  transform:translateY(8px);
-  animation:heroTypeIn .18s ease-out forwards;
+.heroTitleType .typeChar.shown{
+  opacity:1 !important;
+  transform:none !important;
+  animation:none !important;
 }
-.heroTitleType .typeChar.shown{opacity:1;transform:none;}
+
 .heroTypeCursor{
   display:inline-block;
   width:4px;
@@ -1609,17 +1605,38 @@ html.light-theme header.nav .links.open a.active{
   vertical-align:-.03em;
   background:var(--cyan);
   border-radius:2px;
-  box-shadow:0 0 10px var(--cyan),0 0 24px rgba(57,216,255,.72),0 0 42px rgba(57,216,255,.28);
+  box-shadow:
+    0 0 10px var(--cyan),
+    0 0 24px rgba(57,216,255,.72),
+    0 0 42px rgba(57,216,255,.28);
   animation:heroCursorBlink .68s steps(1,end) infinite;
 }
-@keyframes heroTypeIn{to{opacity:1;transform:translateY(0);}}
-@keyframes heroCursorBlink{50%{opacity:0;}}
-@media(max-width:600px){
-  .heroTypeCursor{width:3px;margin-left:6px;}
+
+@keyframes heroCursorBlink{
+  50%{opacity:0;}
 }
+
+@media(max-width:600px){
+  .heroTitleType{
+    font-size:52px;
+    margin:22px 0;
+  }
+  .heroTypeCursor{
+    width:3px;
+    margin-left:6px;
+  }
+}
+
 @media(prefers-reduced-motion:reduce){
-  .heroTitleType .typeChar{animation:none;opacity:1;transform:none;}
-  .heroTypeCursor{animation:none;opacity:1;}
+  .heroTitleType .typeChar{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+  .heroTypeCursor{
+    animation:none !important;
+    opacity:1 !important;
+  }
 }
 
 
