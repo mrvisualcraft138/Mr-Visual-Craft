@@ -1,113 +1,197 @@
-/* Home navigation memory: returning Home from another page skips the opening animation. */
+/* =========================================================
+   MR VISUALCRAFT
+   MAIN APP.JS
+   ========================================================= */
+
+
+/* =========================================================
+   HOME NAVIGATION MEMORY
+   Returning Home from another page skips opening animation.
+   ========================================================= */
+
 (function(){
+
   document.addEventListener('click', function(e){
-    const a=e.target.closest && e.target.closest('a[href]');
+
+    const a =
+      e.target.closest &&
+      e.target.closest('a[href]');
+
     if(!a) return;
 
-    const raw=a.getAttribute('href') || '';
+
+    const raw =
+      a.getAttribute('href') || '';
+
 
     if(
       !raw ||
       raw.startsWith('#') ||
       raw.startsWith('mailto:') ||
       raw.startsWith('tel:') ||
-      a.target==='_blank'
-    ) return;
+      a.target === '_blank'
+    ){
+
+      return;
+
+    }
+
 
     try{
-      const u=new URL(raw, location.href);
+
+      const u =
+        new URL(
+          raw,
+          location.href
+        );
+
 
       const isHome =
-        u.origin===location.origin &&
+        u.origin === location.origin &&
         (
-          u.pathname==='/' ||
+          u.pathname === '/' ||
           u.pathname.endsWith('/index.html')
         );
 
+
       const onHome =
-        location.pathname==='/' ||
+        location.pathname === '/' ||
         location.pathname.endsWith('/index.html');
 
+
       if(isHome && !onHome){
+
         e.preventDefault();
+
 
         const target =
           u.pathname +
           '?skipHomeIntro=1' +
-          (u.hash||'');
+          (u.hash || '');
 
-        location.href=target;
+
+        location.href =
+          target;
+
       }
 
     }catch(_){}
+
   }, true);
+
 })();
 
 
-/* MR VISUALCRAFT theme control */
+
+/* =========================================================
+   MR VISUALCRAFT THEME CONTROL
+   ========================================================= */
+
 (function(){
 
   const saved =
-    localStorage.getItem('mrvc_theme');
+    localStorage.getItem(
+      'mrvc_theme'
+    );
+
 
   if(saved === 'light'){
+
     document.documentElement.classList.add(
       'light-theme'
     );
+
   }
+
 
   function mountThemeToggle(){
 
     const actions =
-      document.querySelector('.navActions');
+      document.querySelector(
+        '.navActions'
+      );
+
 
     if(
       !actions ||
-      actions.querySelector('.themeToggle')
-    ) return;
+      actions.querySelector(
+        '.themeToggle'
+      )
+    ){
+
+      return;
+
+    }
+
 
     const b =
-      document.createElement('button');
+      document.createElement(
+        'button'
+      );
 
-    b.className='themeToggle';
-    b.type='button';
+
+    b.className =
+      'themeToggle';
+
+
+    b.type =
+      'button';
+
 
     b.setAttribute(
       'aria-label',
       'Toggle dark and light theme'
     );
 
-    b.title='Toggle dark / light mode';
+
+    b.title =
+      'Toggle dark / light mode';
+
 
     b.innerHTML =
       '<span class="moon" aria-hidden="true">☾</span>' +
       '<span class="sun" aria-hidden="true">☀</span>';
 
+
     const first =
-      actions.querySelector('.btn');
+      actions.querySelector(
+        '.btn'
+      );
+
 
     actions.insertBefore(
       b,
       first || actions.firstChild
     );
 
-    b.addEventListener('click',()=>{
 
-      const light =
-        document.documentElement.classList.toggle(
-          'light-theme'
+    b.addEventListener(
+      'click',
+      () => {
+
+        const light =
+          document.documentElement.classList.toggle(
+            'light-theme'
+          );
+
+
+        localStorage.setItem(
+          'mrvc_theme',
+          light
+            ? 'light'
+            : 'dark'
         );
 
-      localStorage.setItem(
-        'mrvc_theme',
-        light ? 'light' : 'dark'
-      );
-
-    });
+      }
+    );
 
   }
 
-  if(document.readyState === 'loading'){
+
+  if(
+    document.readyState ===
+    'loading'
+  ){
 
     document.addEventListener(
       'DOMContentLoaded',
@@ -123,6 +207,7 @@
 })();
 
 
+
 /* =========================================================
    MAIN SITE JAVASCRIPT
    ========================================================= */
@@ -132,40 +217,79 @@
   const $ =
     s => document.querySelector(s);
 
+
   const path =
-    location.pathname.replace(/\\/g,'/');
+    location.pathname.replace(
+      /\\/g,
+      '/'
+    );
 
 
-  /* Active navigation link */
+  /* ---------------------------------------------------------
+     ACTIVE NAVIGATION LINK
+     --------------------------------------------------------- */
+
   const active =
-    [...document.querySelectorAll('.links a')].find(a =>
+    [
+      ...document.querySelectorAll(
+        '.links a'
+      )
+    ].find(a => {
 
-      a.getAttribute('href') === path ||
+      return (
 
-      (
-        path.startsWith('/work/') &&
-        a.getAttribute('href') === '/work'
+        a.getAttribute('href') ===
+        path
+
       ) ||
 
       (
-        path.startsWith('/services/') &&
-        a.getAttribute('href') === '/services'
-      )
 
-    );
+        path.startsWith('/work/') &&
+        a.getAttribute('href') ===
+        '/work'
+
+      ) ||
+
+      (
+
+        path.startsWith('/services/') &&
+        a.getAttribute('href') ===
+        '/services'
+
+      );
+
+    });
+
 
   if(active){
-    active.classList.add('active');
+
+    active.classList.add(
+      'active'
+    );
+
   }
 
 
-  /* Cursor glow */
+
+  /* ---------------------------------------------------------
+     CURSOR GLOW
+     --------------------------------------------------------- */
+
   const glow =
-    document.createElement('div');
+    document.createElement(
+      'div'
+    );
 
-  glow.className='cursorGlow';
 
-  document.body.appendChild(glow);
+  glow.className =
+    'cursorGlow';
+
+
+  document.body.appendChild(
+    glow
+  );
+
 
   document.addEventListener(
     'pointermove',
@@ -174,6 +298,7 @@
       glow.style.left =
         e.clientX + 'px';
 
+
       glow.style.top =
         e.clientY + 'px';
 
@@ -181,44 +306,76 @@
   );
 
 
-  /* Scroll reveal animations */
+
+  /* ---------------------------------------------------------
+     SCROLL REVEAL ANIMATIONS
+     --------------------------------------------------------- */
+
   const obs =
     new IntersectionObserver(
-      es =>
-        es.forEach(e =>
-          e.isIntersecting &&
-          e.target.classList.add('in')
-        ),
+      entries => {
+
+        entries.forEach(
+          e => {
+
+            if(
+              e.isIntersecting
+            ){
+
+              e.target.classList.add(
+                'in'
+              );
+
+            }
+
+          }
+        );
+
+      },
       {
-        threshold:.08
+        threshold: .08
       }
     );
+
 
   document
     .querySelectorAll(
       '.reveal,.card,.panel,.step,.pageHero,.section'
     )
-    .forEach((e,i)=>{
+    .forEach(
+      (e,i) => {
 
-      e.classList.add('reveal');
+        e.classList.add(
+          'reveal'
+        );
 
-      e.style.transitionDelay =
-        (Math.min(i,8) * 45) + 'ms';
 
-      obs.observe(e);
+        e.style.transitionDelay =
+          (
+            Math.min(i,8) * 45
+          ) + 'ms';
 
-    });
+
+        obs.observe(
+          e
+        );
+
+      }
+    );
+
 
 
   /* =========================================================
-     MOBILE MENU FIX
+     MOBILE MENU
      ========================================================= */
 
   const ham =
     $('.hamb');
 
+
   const nav =
     $('.links');
+
 
   if(ham && nav){
 
@@ -230,7 +387,10 @@
 
     function closeMenu(){
 
-      nav.classList.remove('open');
+      nav.classList.remove(
+        'open'
+      );
+
 
       ham.setAttribute(
         'aria-expanded',
@@ -247,32 +407,40 @@
         e.preventDefault();
         e.stopPropagation();
 
+
         const isOpen =
-          nav.classList.toggle('open');
+          nav.classList.toggle(
+            'open'
+          );
+
 
         ham.setAttribute(
           'aria-expanded',
-          isOpen ? 'true' : 'false'
+          isOpen
+            ? 'true'
+            : 'false'
         );
 
       }
     );
 
 
-    /* Close after clicking a menu link */
     nav.addEventListener(
       'click',
       e => {
 
-        if(e.target.closest('a')){
+        if(
+          e.target.closest('a')
+        ){
+
           closeMenu();
+
         }
 
       }
     );
 
 
-    /* Close when clicking outside menu */
     document.addEventListener(
       'click',
       e => {
@@ -291,19 +459,23 @@
     );
 
 
-    /* Close when returning to desktop */
     window.addEventListener(
       'resize',
       () => {
 
-        if(window.innerWidth > 760){
+        if(
+          window.innerWidth > 760
+        ){
+
           closeMenu();
+
         }
 
       }
     );
 
   }
+
 
 
   /* =========================================================
@@ -313,25 +485,34 @@
   const form =
     $('#contactForm');
 
+
   if(form){
 
     const status =
       $('#formStatus');
 
 
-    const pending = () =>
-      JSON.parse(
-        localStorage.getItem(
-          'mrvc_pending'
-        ) || '[]'
-      );
+    const pending =
+      () => {
+
+        return JSON.parse(
+          localStorage.getItem(
+            'mrvc_pending'
+          ) || '[]'
+        );
+
+      };
 
 
-    const save = x =>
-      localStorage.setItem(
-        'mrvc_pending',
-        JSON.stringify(x)
-      );
+    const save =
+      x => {
+
+        localStorage.setItem(
+          'mrvc_pending',
+          JSON.stringify(x)
+        );
+
+      };
 
 
     async function flush(){
@@ -339,31 +520,44 @@
       let q =
         pending();
 
+
       if(!q.length) return;
 
 
-      for(const item of [...q]){
+      for(
+        const item of [...q]
+      ){
 
         try{
 
           const r =
             await fetch(
-              (
-                location.protocol === 'file:'
-                  ? 'http://localhost:3000'
-                  : ''
-              ) + '/api/contact',
-              {
-                method:'POST',
 
-                headers:{
+              (
+                location.protocol ===
+                'file:'
+
+                  ? 'http://localhost:3000'
+
+                  : ''
+
+              ) +
+              '/api/contact',
+
+              {
+
+                method: 'POST',
+
+                headers: {
                   'Content-Type':
                     'application/json'
                 },
 
                 body:
                   JSON.stringify(item)
+
               }
+
             );
 
 
@@ -371,7 +565,8 @@
 
             q =
               q.filter(
-                x => x !== item
+                x =>
+                  x !== item
               );
 
           }
@@ -402,7 +597,9 @@
 
         const x =
           Object.fromEntries(
-            new FormData(form).entries()
+            new FormData(
+              form
+            ).entries()
           );
 
 
@@ -414,27 +611,39 @@
 
           const r =
             await fetch(
-              (
-                location.protocol === 'file:'
-                  ? 'http://localhost:3000'
-                  : ''
-              ) + '/api/contact',
-              {
-                method:'POST',
 
-                headers:{
+              (
+                location.protocol ===
+                'file:'
+
+                  ? 'http://localhost:3000'
+
+                  : ''
+
+              ) +
+              '/api/contact',
+
+              {
+
+                method: 'POST',
+
+                headers: {
                   'Content-Type':
                     'application/json'
                 },
 
                 body:
                   JSON.stringify(x)
+
               }
+
             );
 
 
           if(!r.ok){
+
             throw new Error();
+
           }
 
 
@@ -444,13 +653,14 @@
 
           form.reset();
 
-
         }catch(err){
 
           const q =
             pending();
 
+
           q.push(x);
+
 
           save(q);
 
@@ -466,6 +676,7 @@
   }
 
 
+
   /* =========================================================
      ADMIN MESSAGES
      ========================================================= */
@@ -473,86 +684,125 @@
   const admin =
     $('#adminList');
 
+
   if(admin){
 
     fetch(
+
       (
-        location.protocol === 'file:'
+        location.protocol ===
+        'file:'
+
           ? 'http://localhost:3000'
+
           : ''
-      ) + '/api/messages'
+
+      ) +
+      '/api/messages'
+
     )
 
-    .then(r => r.json())
+    .then(
+      r => r.json()
+    )
 
-    .then(items => {
+    .then(
+      items => {
 
-      admin.innerHTML =
-        items.length
+        admin.innerHTML =
+          items.length
 
-          ? items.map(x => `
+            ? items.map(
+                x => `
 
-              <article class="panel">
+                  <article class="panel">
 
-                <strong>
-                  ${escape(x.name)}
-                </strong>
+                    <strong>
+                      ${escape(x.name)}
+                    </strong>
 
-                <div>
-                  ${escape(x.email)}
-                  ${x.phone
-                    ? ' · ' + escape(x.phone)
-                    : ''
-                  }
-                  ·
-                  ${new Date(
-                    x.createdAt
-                  ).toLocaleString()}
-                </div>
+                    <div>
+                      ${escape(x.email)}
+                      ${
+                        x.phone
+                          ? ' · ' +
+                            escape(x.phone)
+                          : ''
+                      }
+                      ·
+                      ${
+                        new Date(
+                          x.createdAt
+                        ).toLocaleString()
+                      }
+                    </div>
 
-                <p>
+                    <p>
 
-                  ${
-                    x.project
-                      ? '<strong>Project:</strong> ' +
-                        escape(x.project) +
-                        '<br>'
-                      : ''
-                  }
+                      ${
+                        x.project
 
-                  ${escape(x.message)}
+                          ? '<strong>Project:</strong> ' +
+                            escape(x.project) +
+                            '<br>'
 
-                </p>
+                          : ''
+                      }
 
-              </article>
+                      ${escape(x.message)}
 
-            `).join('')
+                    </p>
 
-          : '<div class="panel">No messages yet.</div>';
+                  </article>
 
-    })
+                `
+              ).join('')
 
-    .catch(()=>{
+            : '<div class="panel">No messages yet.</div>';
 
-      admin.innerHTML =
-        '<div class="panel">Backend unavailable.</div>';
+      }
+    )
 
-    });
+    .catch(
+      () => {
+
+        admin.innerHTML =
+          '<div class="panel">Backend unavailable.</div>';
+
+      }
+    );
 
   }
 
 
-  /* Escape HTML */
+
+  /* ---------------------------------------------------------
+     ESCAPE HTML
+     --------------------------------------------------------- */
+
   function escape(s){
 
-    return String(s || '').replace(
+    return String(
+      s || ''
+    ).replace(
       /[&<>"']/g,
       m => ({
-        '&':'&amp;',
-        '<':'&lt;',
-        '>':'&gt;',
-        '"':'&quot;',
-        "'":'&#039;'
+
+        '&':
+          '&amp;',
+
+        '<':
+          '&lt;',
+
+        '>':
+          '&gt;',
+
+        '"':
+          '&quot;',
+
+        "'":
+          '&#039;'
+
       }[m])
     );
 
@@ -561,16 +811,21 @@
 })();
 
 
+
 /* =========================================================
    PROJECT SLIDER
    ========================================================= */
 
 const slides =
-  document.querySelector('#slides');
+  document.querySelector(
+    '#slides'
+  );
+
 
 if(slides){
 
   let i = 0;
+
 
   const dots =
     [
@@ -580,57 +835,84 @@ if(slides){
     ];
 
 
-  const go = n => {
+  const go =
+    n => {
 
-    i =
-      (n + 3) % 3;
+      i =
+        (n + 3) % 3;
 
-    slides.style.transform =
-      `translateX(-${i * 100}%)`;
 
-    dots.forEach(
-      (d,k) =>
-        d.classList.toggle(
-          'on',
-          k === i
-        )
-    );
+      slides.style.transform =
+        `translateX(-${i * 100}%)`;
 
-  };
+
+      dots.forEach(
+        (d,k) => {
+
+          d.classList.toggle(
+            'on',
+            k === i
+          );
+
+        }
+      );
+
+    };
 
 
   dots.forEach(
-    d =>
+    d => {
+
       d.onclick =
-        () => go(+d.dataset.slide)
+        () => go(
+          +d.dataset.slide
+        );
+
+    }
   );
 
 
   const prev =
-    document.querySelector('#prev');
+    document.querySelector(
+      '#prev'
+    );
+
 
   const next =
-    document.querySelector('#next');
+    document.querySelector(
+      '#next'
+    );
 
 
   if(prev){
+
     prev.onclick =
-      () => go(i - 1);
+      () => go(
+        i - 1
+      );
+
   }
 
 
   if(next){
+
     next.onclick =
-      () => go(i + 1);
+      () => go(
+        i + 1
+      );
+
   }
 
 
   setInterval(
-    () => go(i + 1),
+    () => go(
+      i + 1
+    ),
     6500
   );
 
 }
+
 
 
 /* =========================================================
@@ -642,9 +924,15 @@ document.addEventListener(
   e => {
 
     if(
+
       (e.ctrlKey || e.metaKey) &&
+
       e.key.toLowerCase() === 'p' &&
-      document.body.classList.contains('cvBody')
+
+      document.body.classList.contains(
+        'cvBody'
+      )
+
     ){
 
       e.preventDefault();
@@ -657,6 +945,7 @@ document.addEventListener(
 );
 
 
+
 /* =========================================================
    DESKTOP PROJECT CARD POINTER LIGHTING
    ========================================================= */
@@ -664,82 +953,125 @@ document.addEventListener(
 (function(){
 
   if(
+
     window.matchMedia(
       '(pointer:fine)'
     ).matches
+
   ){
 
     document
       .querySelectorAll(
         '.luxWorkGrid .workCard'
       )
-      .forEach(card => {
+      .forEach(
+        card => {
 
-        card.addEventListener(
-          'pointermove',
-          e => {
+          card.addEventListener(
+            'pointermove',
+            e => {
 
-            const r =
-              card.getBoundingClientRect();
-
-
-            card.style.setProperty(
-              '--mx',
-              (
-                (e.clientX - r.left) /
-                r.width *
-                100
-              ) + '%'
-            );
+              const r =
+                card.getBoundingClientRect();
 
 
-            card.style.setProperty(
-              '--my',
-              (
-                (e.clientY - r.top) /
-                r.height *
-                100
-              ) + '%'
-            );
+              card.style.setProperty(
+                '--mx',
 
-          }
-        );
+                (
+                  (
+                    e.clientX -
+                    r.left
+                  ) /
+                  r.width *
+                  100
 
-      });
+                ) + '%'
+              );
+
+
+              card.style.setProperty(
+                '--my',
+
+                (
+                  (
+                    e.clientY -
+                    r.top
+                  ) /
+                  r.height *
+                  100
+
+                ) + '%'
+              );
+
+            }
+          );
+
+        }
+      );
 
   }
 
 })();
 
 
+
 /* =========================================================
-   OPENING INTRO + HARD-CODED HERO TYPEWRITER
-   Hero text:
-   Freelance Creative Designer & Developer
+   OPENING INTRO + HERO TYPEWRITER
    ========================================================= */
 
 (function(){
 
   const intro =
-    document.getElementById('typingIntro');
+    document.getElementById(
+      'typingIntro'
+    );
+
 
   const introText =
-    document.getElementById('typingText');
+    document.getElementById(
+      'typingText'
+    );
+
 
   const hero =
-    document.querySelector('.heroTitleType');
+    document.querySelector(
+      '.heroTitleType'
+    );
+
 
   if(
     !intro ||
     !introText ||
     !hero
-  ) return;
+  ){
+
+    return;
+
+  }
 
 
-  /* Exact hard-coded Hero text */
-  const heroText =
-    'Freelance Creative Designer & Developer';
 
+  /* ---------------------------------------------------------
+     HERO TEXT
+     --------------------------------------------------------- */
+
+  const heroParts = [
+    {
+      text: 'Freelance Creative',
+      className: 'white'
+    },
+    {
+      text: 'Designer & Developer',
+      className: 'lime'
+    }
+  ];
+
+
+
+  /* ---------------------------------------------------------
+     MOTION PREFERENCE
+     --------------------------------------------------------- */
 
   const reduce =
     window.matchMedia(
@@ -747,14 +1079,27 @@ document.addEventListener(
     ).matches;
 
 
+
+  /* ---------------------------------------------------------
+     NAVIGATION TYPE
+     --------------------------------------------------------- */
+
   const nav =
     performance.getEntriesByType(
       'navigation'
     )[0];
 
-  const navType =
-    nav ? nav.type : 'navigate';
 
+  const navType =
+    nav
+      ? nav.type
+      : 'navigate';
+
+
+
+  /* ---------------------------------------------------------
+     REFERRER
+     --------------------------------------------------------- */
 
   const ref =
     document.referrer || '';
@@ -768,13 +1113,20 @@ document.addEventListener(
 
     sameOriginRef =
       ref
-        ? new URL(ref).origin === location.origin
+        ? new URL(
+            ref
+          ).origin ===
+          location.origin
         : false;
 
   }catch(e){}
 
 
-  /* Read Home navigation flag */
+
+  /* ---------------------------------------------------------
+     HOME SKIP PARAMETER
+     --------------------------------------------------------- */
+
   const params =
     new URLSearchParams(
       window.location.search
@@ -782,10 +1134,11 @@ document.addEventListener(
 
 
   const skipHomeIntro =
-    params.get('skipHomeIntro') === '1';
+    params.get(
+      'skipHomeIntro'
+    ) === '1';
 
 
-  /* Remove skipHomeIntro from address bar */
   if(skipHomeIntro){
 
     history.replaceState(
@@ -798,13 +1151,11 @@ document.addEventListener(
   }
 
 
-  /*
-    Fresh/direct Home visit or browser refresh:
-    play opening intro + hero typing.
 
-    Internal navigation back to Home:
-    skip opening animation and show Hero immediately.
-  */
+  /* ---------------------------------------------------------
+     SHOULD INTRO PLAY?
+     --------------------------------------------------------- */
+
   const shouldPlayIntro =
     !skipHomeIntro &&
     (
@@ -813,37 +1164,69 @@ document.addEventListener(
     );
 
 
+
+  /* ---------------------------------------------------------
+     INTRO TEXT
+     --------------------------------------------------------- */
+
   const introLine =
     'UBAIDULLAH  •  DESIGN  •  DIGITAL  •  AI';
+
+
+
+  /* =========================================================
+     BUILD HERO
+     ========================================================= */
+
+  function buildHeroEmpty(){
+
+    hero.innerHTML = '';
+
+
+    hero.style.visibility =
+      'visible';
+
+
+    hero.style.opacity =
+      '1';
+
+
+    hero.dataset.typingStarted =
+      '1';
+
+
+    hero.classList.add(
+      'typingStarted'
+    );
+
+  }
+
 
 
   /* =========================================================
      SHOW HERO IMMEDIATELY
      ========================================================= */
 
-  const showHeroImmediately = () => {
+  function showHeroImmediately(){
 
-    hero.querySelectorAll(
-      '.heroTypeCursor'
-    ).forEach(
-      x => x.remove()
-    );
-
-
-    /*
-      Hard-coded Hero text.
-      This guarantees the original text
-      always appears correctly.
-    */
     hero.innerHTML = `
-      <span class="typeWord">
-        ${heroText}
+
+      <span class="typeWord white">
+        Freelance Creative
       </span>
+
+      <br>
+
+      <span class="typeWord lime">
+        Designer &amp; Developer
+      </span>
+
     `;
 
 
     hero.style.visibility =
       'visible';
+
 
     hero.style.opacity =
       '1';
@@ -858,124 +1241,189 @@ document.addEventListener(
       'typingDone'
     );
 
-  };
+  }
+
 
 
   /* =========================================================
-     FINISH OPENING INTRO
+     FINISH INTRO
      ========================================================= */
 
-  const finishIntro = () => {
+  function finishIntro(){
 
-    intro.classList.add('hide');
-
-    window.dispatchEvent(
-      new Event('mrvcIntroDone')
+    intro.classList.add(
+      'hide'
     );
 
-  };
+
+    window.dispatchEvent(
+      new Event(
+        'mrvcIntroDone'
+      )
+    );
+
+  }
+
 
 
   /* =========================================================
      START HERO TYPEWRITER
      ========================================================= */
 
-  const startHeroTyping = () => {
+  function startHeroTyping(){
 
     if(
-      hero.dataset.typingStarted === '1'
-    ) return;
-
-
-    hero.dataset.typingStarted =
-      '1';
-
-
-    /* Clear any old Hero content */
-    hero.innerHTML = '';
-
-
-    const word =
-      document.createElement('span');
-
-    word.className =
-      'typeWord';
-
-
-    hero.appendChild(word);
-
-
-    hero.style.visibility =
-      'visible';
-
-    hero.style.opacity =
-      '1';
-
-
-    hero.classList.add(
-      'typingStarted'
-    );
-
-
-    /* Reduced motion */
-    if(reduce){
-
-      word.textContent =
-        heroText;
-
-      hero.classList.add(
-        'typingDone'
-      );
+      hero.dataset.typingStarted ===
+      '1'
+    ){
 
       return;
 
     }
 
 
-    /* Animated cursor */
-    const cursor =
-      document.createElement('span');
+    buildHeroEmpty();
 
-    cursor.className =
-      'heroTypeCursor';
 
-    cursor.setAttribute(
-      'aria-hidden',
-      'true'
+    const words =
+      [];
+
+
+    heroParts.forEach(
+      part => {
+
+        const span =
+          document.createElement(
+            'span'
+          );
+
+
+        span.className =
+          'typeWord ' +
+          part.className;
+
+
+        hero.appendChild(
+          span
+        );
+
+
+        words.push(
+          span
+        );
+
+
+        if(
+          part !==
+          heroParts[
+            heroParts.length - 1
+          ]
+        ){
+
+          hero.appendChild(
+            document.createElement(
+              'br'
+            )
+          );
+
+        }
+
+      }
     );
 
 
-    word.appendChild(cursor);
+
+    /* -------------------------------------------------------
+       REDUCED MOTION
+       ------------------------------------------------------- */
+
+    if(reduce){
+
+      words.forEach(
+        (word,index) => {
+
+          word.textContent =
+            heroParts[index].text;
+
+        }
+      );
 
 
-    let i = 0;
+      hero.classList.add(
+        'typingDone'
+      );
+
+
+      return;
+
+    }
+
+
+
+    /* -------------------------------------------------------
+       TYPE CHARACTER BY CHARACTER
+       ------------------------------------------------------- */
+
+    let partIndex = 0;
+
+    let charIndex = 0;
 
     const speed = 65;
 
 
-    const typeNext = () => {
+    function typeNext(){
 
-      if(i < heroText.length){
+      if(
+        partIndex >=
+        heroParts.length
+      ){
+
+        hero.classList.add(
+          'typingDone'
+        );
+
+        return;
+
+      }
+
+
+      const currentWord =
+        words[partIndex];
+
+
+      const currentText =
+        heroParts[
+          partIndex
+        ].text;
+
+
+      if(
+        charIndex <
+        currentText.length
+      ){
 
         const char =
           document.createElement(
             'span'
           );
 
+
         char.className =
           'typeChar shown';
 
+
         char.textContent =
-          heroText.charAt(i);
+          currentText.charAt(
+            charIndex
+          );
 
 
-        word.insertBefore(
-          char,
-          cursor
+        currentWord.appendChild(
+          char
         );
 
 
-        i++;
+        charIndex++;
 
 
         setTimeout(
@@ -983,20 +1431,28 @@ document.addEventListener(
           speed
         );
 
+
       }else{
 
-        hero.classList.add(
-          'typingDone'
+        partIndex++;
+
+        charIndex = 0;
+
+
+        setTimeout(
+          typeNext,
+          220
         );
 
       }
 
-    };
+    }
 
 
     typeNext();
 
-  };
+  }
+
 
 
   /* =========================================================
@@ -1009,15 +1465,18 @@ document.addEventListener(
       'hide'
     );
 
+
     showHeroImmediately();
+
 
     return;
 
   }
 
 
+
   /* =========================================================
-     REDUCED MOTION
+     REDUCED MOTION INTRO
      ========================================================= */
 
   if(reduce){
@@ -1031,6 +1490,7 @@ document.addEventListener(
 
         finishIntro();
 
+
         setTimeout(
           startHeroTyping,
           450
@@ -1040,9 +1500,11 @@ document.addEventListener(
       1700
     );
 
+
     return;
 
   }
+
 
 
   /* =========================================================
@@ -1052,7 +1514,7 @@ document.addEventListener(
   let i = 0;
 
 
-  const typeIntro = () => {
+  function typeIntro(){
 
     introText.textContent =
       introLine.slice(
@@ -1062,7 +1524,8 @@ document.addEventListener(
 
 
     if(
-      i <= introLine.length
+      i <=
+      introLine.length
     ){
 
       setTimeout(
@@ -1077,6 +1540,7 @@ document.addEventListener(
 
           finishIntro();
 
+
           setTimeout(
             startHeroTyping,
             500
@@ -1088,7 +1552,7 @@ document.addEventListener(
 
     }
 
-  };
+  }
 
 
   setTimeout(
