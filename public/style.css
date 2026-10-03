@@ -1764,28 +1764,3 @@ html.skipHomeIntro .heroTitleType{visibility:visible !important;}
 @media (max-width:700px){
   .luxVisual .heroPerson{top:10px !important;}
 }
-/* FINAL HERO TEXT VISIBILITY FIX */
-.heroTitleType{
-  visibility:visible !important;
-  opacity:1 !important;
-}
-
-.heroTitleType .typeWord{
-  display:inline !important;
-  visibility:visible !important;
-  opacity:1 !important;
-  white-space:normal !important;
-}
-
-.heroTitleType .typeChar{
-  display:inline !important;
-  visibility:visible !important;
-  opacity:1 !important;
-  transform:none !important;
-  animation:none !important;
-}
-
-.heroTitleType.typingStarted{
-  visibility:visible !important;
-  opacity:1 !important;
-}
