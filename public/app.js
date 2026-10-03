@@ -1,62 +1,25 @@
-/* =========================================================
-   HOME NAVIGATION MEMORY
-   Returning Home from another page skips the opening animation.
-   ========================================================= */
-
+/* Home navigation memory: returning Home from another page skips the opening animation. */
 (function(){
-
   document.addEventListener('click', function(e){
-
-    const a = e.target.closest && e.target.closest('a[href]');
+    const a=e.target.closest && e.target.closest('a[href]');
     if(!a) return;
-
-    const raw = a.getAttribute('href') || '';
-
-    if(
-      !raw ||
-      raw.startsWith('#') ||
-      raw.startsWith('mailto:') ||
-      raw.startsWith('tel:') ||
-      a.target === '_blank'
-    ) return;
-
+    const raw=a.getAttribute('href') || '';
+    if(!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:') || a.target==='_blank') return;
     try{
-
-      const u = new URL(raw, location.href);
-
-      const isHome =
-        u.origin === location.origin &&
-        (u.pathname === '/' || u.pathname.endsWith('/index.html'));
-
-      const onHome =
-        location.pathname === '/' ||
-        location.pathname.endsWith('/index.html');
-
+      const u=new URL(raw, location.href);
+      const isHome=u.origin===location.origin && (u.pathname==='/' || u.pathname.endsWith('/index.html'));
+      const onHome=(location.pathname==='/' || location.pathname.endsWith('/index.html'));
       if(isHome && !onHome){
-
         e.preventDefault();
-
-        const target =
-          u.pathname +
-          '?skipHomeIntro=1' +
-          (u.hash || '');
-
-        location.href = target;
+        const target=u.pathname + '?skipHomeIntro=1' + (u.hash||'');
+        location.href=target;
       }
-
     }catch(_){}
-
   }, true);
-
 })();
 
-
-/* =========================================================
-   MR VISUALCRAFT THEME CONTROL
-   ========================================================= */
-
+/* MR VISUALCRAFT theme control */
 (function(){
-
   const saved = localStorage.getItem('mrvc_theme');
 
   if(saved === 'light'){
@@ -64,21 +27,14 @@
   }
 
   function mountThemeToggle(){
-
     const actions = document.querySelector('.navActions');
 
     if(!actions || actions.querySelector('.themeToggle')) return;
 
     const b = document.createElement('button');
-
     b.className = 'themeToggle';
     b.type = 'button';
-
-    b.setAttribute(
-      'aria-label',
-      'Toggle dark and light theme'
-    );
-
+    b.setAttribute('aria-label','Toggle dark and light theme');
     b.title = 'Toggle dark / light mode';
 
     b.innerHTML =
@@ -92,35 +48,25 @@
       first || actions.firstChild
     );
 
-    b.addEventListener('click', () => {
-
+    b.addEventListener('click',()=>{
       const light =
-        document.documentElement.classList.toggle(
-          'light-theme'
-        );
+        document.documentElement.classList.toggle('light-theme');
 
       localStorage.setItem(
         'mrvc_theme',
         light ? 'light' : 'dark'
       );
-
     });
-
   }
 
   if(document.readyState === 'loading'){
-
     document.addEventListener(
       'DOMContentLoaded',
       mountThemeToggle
     );
-
   }else{
-
     mountThemeToggle();
-
   }
-
 })();
 
 
@@ -133,26 +79,21 @@
   const $ = s => document.querySelector(s);
 
   const path =
-    location.pathname.replace(/\\/g, '/');
+    location.pathname.replace(/\\/g,'/');
 
 
   /* Active navigation link */
-
   const active =
     [...document.querySelectorAll('.links a')].find(a =>
-
       a.getAttribute('href') === path ||
-
       (
         path.startsWith('/work/') &&
         a.getAttribute('href') === '/work'
       ) ||
-
       (
         path.startsWith('/services/') &&
         a.getAttribute('href') === '/services'
       )
-
     );
 
   if(active){
@@ -161,7 +102,6 @@
 
 
   /* Cursor glow */
-
   const glow =
     document.createElement('div');
 
@@ -169,52 +109,42 @@
 
   document.body.appendChild(glow);
 
-  document.addEventListener('pointermove', e => {
-
-    glow.style.left =
-      e.clientX + 'px';
-
-    glow.style.top =
-      e.clientY + 'px';
-
+  document.addEventListener('pointermove',e=>{
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
   });
 
 
   /* Scroll reveal animations */
-
   const obs =
     new IntersectionObserver(
-
       es =>
         es.forEach(e =>
           e.isIntersecting &&
           e.target.classList.add('in')
         ),
-
       {
-        threshold: .08
+        threshold:.08
       }
-
     );
 
   document
     .querySelectorAll(
       '.reveal,.card,.panel,.step,.pageHero,.section'
     )
-    .forEach((e, i) => {
+    .forEach((e,i)=>{
 
       e.classList.add('reveal');
 
       e.style.transitionDelay =
-        (Math.min(i, 8) * 45) + 'ms';
+        (Math.min(i,8) * 45) + 'ms';
 
       obs.observe(e);
-
     });
 
 
   /* =========================================================
-     MOBILE MENU
+     MOBILE MENU FIX
      ========================================================= */
 
   const ham = $('.hamb');
@@ -236,11 +166,10 @@
         'aria-expanded',
         'false'
       );
-
     }
 
 
-    ham.addEventListener('click', e => {
+    ham.addEventListener('click',e=>{
 
       e.preventDefault();
       e.stopPropagation();
@@ -252,35 +181,34 @@
         'aria-expanded',
         isOpen ? 'true' : 'false'
       );
-
     });
 
 
-    nav.addEventListener('click', e => {
+    /* Close after clicking a menu link */
+    nav.addEventListener('click',e=>{
 
       if(e.target.closest('a')){
         closeMenu();
       }
-
     });
 
 
-    document.addEventListener('click', e => {
+    /* Close when clicking outside menu */
+    document.addEventListener('click',e=>{
 
       if(
         nav.classList.contains('open') &&
         !nav.contains(e.target) &&
         !ham.contains(e.target)
       ){
-
         closeMenu();
-
       }
 
     });
 
 
-    window.addEventListener('resize', () => {
+    /* Close when returning to desktop */
+    window.addEventListener('resize',()=>{
 
       if(window.innerWidth > 760){
         closeMenu();
@@ -336,9 +264,9 @@
                   : ''
               ) + '/api/contact',
               {
-                method: 'POST',
+                method:'POST',
 
-                headers: {
+                headers:{
                   'Content-Type':
                     'application/json'
                 },
@@ -368,7 +296,6 @@
 
 
       save(q);
-
     }
 
 
@@ -402,9 +329,9 @@
                   : ''
               ) + '/api/contact',
               {
-                method: 'POST',
+                method:'POST',
 
-                headers: {
+                headers:{
                   'Content-Type':
                     'application/json'
                 },
@@ -423,6 +350,7 @@
           status.textContent =
             'Message sent successfully.';
 
+
           form.reset();
 
 
@@ -438,12 +366,10 @@
 
           status.textContent =
             'Saved offline — it will sync when the backend is available.';
-
         }
 
       }
     );
-
   }
 
 
@@ -480,21 +406,15 @@
                 </strong>
 
                 <div>
-
                   ${escape(x.email)}
-
-                  ${
-                    x.phone
-                      ? ' · ' + escape(x.phone)
-                      : ''
+                  ${x.phone
+                    ? ' · ' + escape(x.phone)
+                    : ''
                   }
-
                   ·
-
                   ${new Date(
                     x.createdAt
                   ).toLocaleString()}
-
                 </div>
 
                 <p>
@@ -519,7 +439,7 @@
 
     })
 
-    .catch(() => {
+    .catch(()=>{
 
       admin.innerHTML =
         '<div class="panel">Backend unavailable.</div>';
@@ -530,20 +450,17 @@
 
 
   /* Escape HTML */
-
   function escape(s){
 
     return String(s || '').replace(
       /[&<>"']/g,
-
       m => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#039;'
       }[m])
-
     );
 
   }
@@ -577,9 +494,8 @@ if(slides){
     slides.style.transform =
       `translateX(-${i * 100}%)`;
 
-
     dots.forEach(
-      (d, k) =>
+      (d,k) =>
         d.classList.toggle(
           'on',
           k === i
@@ -604,18 +520,14 @@ if(slides){
 
 
   if(prev){
-
     prev.onclick =
       () => go(i - 1);
-
   }
 
 
   if(next){
-
     next.onclick =
       () => go(i + 1);
-
   }
 
 
@@ -707,491 +619,117 @@ document.addEventListener(
 
 
 /* =========================================================
-   OPENING INTRO + SMOOTH HERO TYPEWRITER
-
-   Fresh/direct Home visit or browser refresh:
-   - Play opening intro
-   - Then type Hero text smoothly
-
-   Internal navigation back to Home:
-   - Skip opening intro
-   - Show finished Hero immediately
-
+   OPENING INTRO + HERO TYPEWRITER
+   Play on a fresh/direct Home visit or a real browser refresh.
+   Do not replay when navigating internally back to Home.
    ========================================================= */
-
 (function(){
-
-  const intro =
-    document.getElementById('typingIntro');
-
-  const introText =
-    document.getElementById('typingText');
-
-  const hero =
-    document.querySelector('.heroTitleType');
-
-
+  const intro=document.getElementById('typingIntro');
+  const introText=document.getElementById('typingText');
+  const hero=document.querySelector('.heroTitleType');
   if(!intro || !introText || !hero) return;
 
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nav=performance.getEntriesByType('navigation')[0];
+  const navType=nav ? nav.type : 'navigate';
+  const ref=document.referrer || '';
+  let sameOriginRef=false;
+  try { sameOriginRef=ref ? new URL(ref).origin===location.origin : false; } catch(e) {}
 
-  const reduce =
-    window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
+  // Direct/fresh Home load or browser refresh = play.
+  // Internal navigation (Contact -> Home, Work -> Home, etc.) = do not replay.
+  let skipReturn=window.__mrvcSkipHomeIntro===true;
 
+  const shouldPlayIntro = !skipReturn && (navType === 'reload' || !sameOriginRef);
 
-  const navEntry =
-    performance.getEntriesByType('navigation')[0];
+  const introLine='UBAIDULLAH  •  DESIGN  •  DIGITAL  •  AI';
 
-  const navType =
-    navEntry
-      ? navEntry.type
-      : 'navigate';
-
-
-  const ref =
-    document.referrer || '';
-
-
-  let sameOriginRef = false;
-
-  try{
-
-    sameOriginRef =
-      ref
-        ? new URL(ref).origin === location.origin
-        : false;
-
-  }catch(e){}
-
-
-  /*
-    URL flag from Home navigation.
-  */
-
-  const urlParams =
-    new URLSearchParams(
-      location.search
-    );
-
-
-  const skipFromURL =
-    urlParams.get('skipHomeIntro') === '1';
-
-
-  /*
-    Clean the URL so the flag does not stay visible.
-  */
-
-  if(skipFromURL){
-
-    const cleanURL =
-      location.pathname +
-      (location.hash || '');
-
-    history.replaceState(
-      {},
-      document.title,
-      cleanURL
-    );
-
-  }
-
-
-  /*
-    Browser refresh = play.
-    Direct Home visit = play.
-    Internal navigation = skip.
-  */
-
-  const shouldPlayIntro =
-    !skipFromURL &&
-    (
-      navType === 'reload' ||
-      !sameOriginRef
-    );
-
-
-  const introLine =
-    'UBAIDULLAH  •  DESIGN  •  DIGITAL  •  AI';
-
-
-  /* =========================================================
-     SHOW HERO IMMEDIATELY
-     ========================================================= */
-
-  const showHeroImmediately = () => {
-
-    hero
-      .querySelectorAll('.heroTypeCursor')
-      .forEach(x => x.remove());
-
-
-    hero
-      .querySelectorAll('.typeChar')
-      .forEach(x => {
-
-        x.classList.add('shown');
-
-        x.style.animation = 'none';
-
-      });
-
-
-    /*
-      If original HTML contains normal text,
-      make sure it remains visible.
-    */
-
-    hero.dataset.typingStarted = '1';
-
-    hero.classList.add(
-      'typingStarted',
-      'typingDone'
-    );
-
+  const showHeroImmediately=()=>{
+    hero.querySelectorAll('.heroTypeCursor').forEach(x=>x.remove());
+    hero.querySelectorAll('.typeChar').forEach(x=>{
+      x.classList.add('shown');
+      x.style.animation='none';
+    });
+    hero.dataset.typingStarted='1';
+    hero.classList.add('typingStarted','typingDone');
   };
 
-
-  /* =========================================================
-     FINISH INTRO
-     ========================================================= */
-
-  const finishIntro = () => {
-
+  const finishIntro=()=>{
     intro.classList.add('hide');
-
-    window.dispatchEvent(
-      new Event('mrvcIntroDone')
-    );
-
+    window.dispatchEvent(new Event('mrvcIntroDone'));
   };
 
+  const startHeroTyping=()=>{
+    if(hero.dataset.typingStarted==='1') return;
+    hero.dataset.typingStarted='1';
 
-  /* =========================================================
-     SMOOTH HERO TYPEWRITER
-     ========================================================= */
+    const parts=[...hero.querySelectorAll('.typeWord')];
+    let delay=0;
+    const speed=92;
 
-  const startHeroTyping = () => {
+    hero.querySelectorAll('.heroTypeCursor').forEach(x=>x.remove());
 
-    if(
-      hero.dataset.typingStarted === '1'
-    ) return;
+    parts.forEach((part, partIndex)=>{
+      const text=part.textContent;
+      part.textContent='';
+      [...text].forEach(ch=>{
+        const span=document.createElement('span');
+        span.className='typeChar';
+        span.textContent=ch;
+        part.appendChild(span);
+        if(reduce){
+          span.classList.add('shown');
+        }else{
+          span.style.animationDelay=delay+'ms';
+          delay+=speed;
+        }
+      });
+      if(partIndex < parts.length-1) delay+=220;
+    });
 
-
-    hero.dataset.typingStarted = '1';
-
-
-    const parts =
-      [...hero.querySelectorAll('.typeWord')];
-
-
-    if(!parts.length){
-
-      hero.classList.add(
-        'typingStarted',
-        'typingDone'
-      );
-
-      return;
-
-    }
-
-
-    /*
-      Save the original text BEFORE clearing it.
-    */
-
-    const words =
-      parts.map(
-        part => part.textContent
-      );
-
-
-    /*
-      Clear old text and old cursor.
-    */
-
-    hero
-      .querySelectorAll('.heroTypeCursor')
-      .forEach(x => x.remove());
-
-
-    parts.forEach(
-      part => {
-        part.textContent = '';
-      }
-    );
-
-
-    /*
-      Create cursor at the end of the final word.
-    */
-
-    const finalPart =
-      parts[parts.length - 1];
-
-
-    const cursor =
-      document.createElement('span');
-
-    cursor.className =
-      'heroTypeCursor';
-
-    cursor.setAttribute(
-      'aria-hidden',
-      'true'
-    );
-
-
+    const finalPart=parts[parts.length-1];
+    const cursor=document.createElement('span');
+    cursor.className='heroTypeCursor';
+    cursor.setAttribute('aria-hidden','true');
     finalPart.appendChild(cursor);
-
-
-    hero.classList.add(
-      'typingStarted'
-    );
-
-
-    /*
-      Reduced-motion users:
-      show everything immediately.
-    */
+    hero.classList.add('typingStarted');
 
     if(reduce){
-
-      parts.forEach(
-        (part, index) => {
-
-          part.textContent =
-            words[index] || '';
-
-        }
-      );
-
-
-      finalPart.appendChild(cursor);
-
-
-      hero.classList.add(
-        'typingDone'
-      );
-
-
-      return;
-
+      hero.classList.add('typingDone');
+    }else{
+      setTimeout(()=>hero.classList.add('typingDone'),delay+180);
     }
-
-
-    /*
-      Smooth real letter-by-letter typing.
-
-      58ms = smooth enough to see every letter
-      without feeling too slow.
-    */
-
-    const speed = 58;
-
-    const pauseBetweenWords = 110;
-
-
-    let partIndex = 0;
-    let charIndex = 0;
-
-
-    const typeNext = () => {
-
-      if(partIndex >= parts.length){
-
-        hero.classList.add(
-          'typingDone'
-        );
-
-        return;
-
-      }
-
-
-      const part =
-        parts[partIndex];
-
-      const text =
-        words[partIndex] || '';
-
-
-      /*
-        Still typing current word.
-      */
-
-      if(charIndex < text.length){
-
-        const span =
-          document.createElement('span');
-
-
-        span.className =
-          'typeChar shown';
-
-
-        span.textContent =
-          text[charIndex];
-
-
-        charIndex++;
-
-
-        /*
-          Insert the new letter BEFORE cursor.
-          This keeps cursor at exact text end.
-        */
-
-        part.insertBefore(
-          span,
-          cursor
-        );
-
-
-        /*
-          Keep cursor inside final part.
-        */
-
-        if(partIndex === parts.length - 1){
-
-          part.appendChild(cursor);
-
-        }
-
-
-        setTimeout(
-          typeNext,
-          speed
-        );
-
-
-        return;
-
-      }
-
-
-      /*
-        Current word finished.
-        Move to next word.
-      */
-
-      charIndex = 0;
-
-      partIndex++;
-
-
-      setTimeout(
-        typeNext,
-        pauseBetweenWords
-      );
-
-    };
-
-
-    typeNext();
-
   };
 
-
-  /* =========================================================
-     INTERNAL NAVIGATION
-     ========================================================= */
-
+  // Internal navigation: no intro, no re-typing, show the finished hero immediately.
   if(!shouldPlayIntro){
-
     intro.classList.add('hide');
-
     showHeroImmediately();
-
     return;
-
   }
-
-
-  /* =========================================================
-     REDUCED MOTION INTRO
-     ========================================================= */
 
   if(reduce){
-
-    introText.textContent =
-      introLine;
-
-
-    setTimeout(
-      () => {
-
-        finishIntro();
-
-        setTimeout(
-          startHeroTyping,
-          450
-        );
-
-      },
-      1700
-    );
-
-
+    introText.textContent=introLine;
+    setTimeout(()=>{
+      finishIntro();
+      setTimeout(startHeroTyping,450);
+    },1700);
     return;
-
   }
 
-
-  /* =========================================================
-     SMOOTH INTRO TYPEWRITER
-     ========================================================= */
-
-  let i = 0;
-
-
-  const typeIntro = () => {
-
-    introText.textContent =
-      introLine.slice(
-        0,
-        i++
-      );
-
-
-    if(i <= introLine.length){
-
-      setTimeout(
-        typeIntro,
-        48
-      );
-
+  let i=0;
+  const typeIntro=()=>{
+    introText.textContent=introLine.slice(0,i++);
+    if(i<=introLine.length){
+      setTimeout(typeIntro,48);
     }else{
-
-      setTimeout(
-        () => {
-
-          finishIntro();
-
-
-          setTimeout(
-            startHeroTyping,
-            500
-          );
-
-        },
-        1050
-      );
-
+      setTimeout(()=>{
+        finishIntro();
+        setTimeout(startHeroTyping,500);
+      },1050);
     }
-
   };
 
-
-  /*
-    Small delay before intro starts.
-  */
-
-  setTimeout(
-    typeIntro,
-    450
-  );
-
+  setTimeout(typeIntro,450);
 })();
+
