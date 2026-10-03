@@ -1,185 +1,73 @@
-/* =========================================================
-   MR VISUALCRAFT
-   MAIN APP.JS
-   ========================================================= */
-
-
-/* =========================================================
-   HOME NAVIGATION MEMORY
-   Returning Home from another page skips opening animation.
-   ========================================================= */
-
+/* Home navigation memory: returning Home from another page skips the opening animation. */
 (function(){
-
   document.addEventListener('click', function(e){
-
-    const a =
-      e.target.closest &&
-      e.target.closest('a[href]');
-
+    const a=e.target.closest && e.target.closest('a[href]');
     if(!a) return;
-
-    const raw =
-      a.getAttribute('href') || '';
-
-    if(
-      !raw ||
-      raw.startsWith('#') ||
-      raw.startsWith('mailto:') ||
-      raw.startsWith('tel:') ||
-      a.target === '_blank'
-    ){
-      return;
-    }
-
+    const raw=a.getAttribute('href') || '';
+    if(!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:') || a.target==='_blank') return;
     try{
-
-      const u =
-        new URL(
-          raw,
-          location.href
-        );
-
-      const isHome =
-        u.origin === location.origin &&
-        (
-          u.pathname === '/' ||
-          u.pathname.endsWith('/index.html')
-        );
-
-      const onHome =
-        location.pathname === '/' ||
-        location.pathname.endsWith('/index.html');
-
+      const u=new URL(raw, location.href);
+      const isHome=u.origin===location.origin && (u.pathname==='/' || u.pathname.endsWith('/index.html'));
+      const onHome=(location.pathname==='/' || location.pathname.endsWith('/index.html'));
       if(isHome && !onHome){
-
         e.preventDefault();
-
-        const target =
-          u.pathname +
-          '?skipHomeIntro=1' +
-          (u.hash || '');
-
-        location.href =
-          target;
-
+        const target=u.pathname + '?skipHomeIntro=1' + (u.hash||'');
+        location.href=target;
       }
-
     }catch(_){}
-
   }, true);
-
 })();
 
-
-
-/* =========================================================
-   MR VISUALCRAFT THEME CONTROL
-   ========================================================= */
-
+/* MR VISUALCRAFT theme control */
 (function(){
-
-  const saved =
-    localStorage.getItem(
-      'mrvc_theme'
-    );
+  const saved = localStorage.getItem('mrvc_theme');
 
   if(saved === 'light'){
-
-    document.documentElement.classList.add(
-      'light-theme'
-    );
-
+    document.documentElement.classList.add('light-theme');
   }
 
   function mountThemeToggle(){
+    const actions = document.querySelector('.navActions');
 
-    const actions =
-      document.querySelector(
-        '.navActions'
-      );
+    if(!actions || actions.querySelector('.themeToggle')) return;
 
-    if(
-      !actions ||
-      actions.querySelector(
-        '.themeToggle'
-      )
-    ){
-      return;
-    }
-
-    const b =
-      document.createElement(
-        'button'
-      );
-
-    b.className =
-      'themeToggle';
-
-    b.type =
-      'button';
-
-    b.setAttribute(
-      'aria-label',
-      'Toggle dark and light theme'
-    );
-
-    b.title =
-      'Toggle dark / light mode';
+    const b = document.createElement('button');
+    b.className = 'themeToggle';
+    b.type = 'button';
+    b.setAttribute('aria-label','Toggle dark and light theme');
+    b.title = 'Toggle dark / light mode';
 
     b.innerHTML =
       '<span class="moon" aria-hidden="true">☾</span>' +
       '<span class="sun" aria-hidden="true">☀</span>';
 
-    const first =
-      actions.querySelector(
-        '.btn'
-      );
+    const first = actions.querySelector('.btn');
 
     actions.insertBefore(
       b,
       first || actions.firstChild
     );
 
-    b.addEventListener(
-      'click',
-      () => {
+    b.addEventListener('click',()=>{
+      const light =
+        document.documentElement.classList.toggle('light-theme');
 
-        const light =
-          document.documentElement.classList.toggle(
-            'light-theme'
-          );
-
-        localStorage.setItem(
-          'mrvc_theme',
-          light
-            ? 'light'
-            : 'dark'
-        );
-
-      }
-    );
-
+      localStorage.setItem(
+        'mrvc_theme',
+        light ? 'light' : 'dark'
+      );
+    });
   }
 
-  if(
-    document.readyState ===
-    'loading'
-  ){
-
+  if(document.readyState === 'loading'){
     document.addEventListener(
       'DOMContentLoaded',
       mountThemeToggle
     );
-
   }else{
-
     mountThemeToggle();
-
   }
-
 })();
-
 
 
 /* =========================================================
@@ -188,120 +76,55 @@
 
 (function(){
 
-  const $ =
-    s => document.querySelector(s);
+  const $ = s => document.querySelector(s);
 
   const path =
-    location.pathname.replace(
-      /\\/g,
-      '/'
-    );
+    location.pathname.replace(/\\/g,'/');
 
 
-  /* ---------------------------------------------------------
-     ACTIVE NAVIGATION LINK
-     --------------------------------------------------------- */
-
+  /* Active navigation link */
   const active =
-    [
-      ...document.querySelectorAll(
-        '.links a'
-      )
-    ].find(a => {
-
-      return (
-
-        a.getAttribute('href') ===
-        path
-
-      ) ||
-
+    [...document.querySelectorAll('.links a')].find(a =>
+      a.getAttribute('href') === path ||
       (
-
         path.startsWith('/work/') &&
-        a.getAttribute('href') ===
-        '/work'
-
+        a.getAttribute('href') === '/work'
       ) ||
-
       (
-
         path.startsWith('/services/') &&
-        a.getAttribute('href') ===
-        '/services'
-
-      );
-
-    });
+        a.getAttribute('href') === '/services'
+      )
+    );
 
   if(active){
-
-    active.classList.add(
-      'active'
-    );
-
+    active.classList.add('active');
   }
 
 
-
-  /* ---------------------------------------------------------
-     CURSOR GLOW
-     --------------------------------------------------------- */
-
+  /* Cursor glow */
   const glow =
-    document.createElement(
-      'div'
-    );
+    document.createElement('div');
 
-  glow.className =
-    'cursorGlow';
+  glow.className = 'cursorGlow';
 
-  document.body.appendChild(
-    glow
-  );
+  document.body.appendChild(glow);
 
-  document.addEventListener(
-    'pointermove',
-    e => {
-
-      glow.style.left =
-        e.clientX + 'px';
-
-      glow.style.top =
-        e.clientY + 'px';
-
-    }
-  );
+  document.addEventListener('pointermove',e=>{
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+  });
 
 
-
-  /* ---------------------------------------------------------
-     SCROLL REVEAL ANIMATIONS
-     --------------------------------------------------------- */
-
+  /* Scroll reveal animations */
   const obs =
     new IntersectionObserver(
-      entries => {
-
-        entries.forEach(
-          e => {
-
-            if(
-              e.isIntersecting
-            ){
-
-              e.target.classList.add(
-                'in'
-              );
-
-            }
-
-          }
-        );
-
-      },
+      es =>
+        es.forEach(e =>
+          e.isIntersecting &&
+          e.target.classList.add('in')
+        ),
       {
-        threshold: .08
+        threshold:.08
       }
     );
 
@@ -309,36 +132,23 @@
     .querySelectorAll(
       '.reveal,.card,.panel,.step,.pageHero,.section'
     )
-    .forEach(
-      (e,i) => {
+    .forEach((e,i)=>{
 
-        e.classList.add(
-          'reveal'
-        );
+      e.classList.add('reveal');
 
-        e.style.transitionDelay =
-          (
-            Math.min(i,8) * 45
-          ) + 'ms';
+      e.style.transitionDelay =
+        (Math.min(i,8) * 45) + 'ms';
 
-        obs.observe(
-          e
-        );
-
-      }
-    );
-
+      obs.observe(e);
+    });
 
 
   /* =========================================================
-     MOBILE MENU
+     MOBILE MENU FIX
      ========================================================= */
 
-  const ham =
-    $('.hamb');
-
-  const nav =
-    $('.links');
+  const ham = $('.hamb');
+  const nav = $('.links');
 
   if(ham && nav){
 
@@ -347,90 +157,66 @@
       'false'
     );
 
+
     function closeMenu(){
 
-      nav.classList.remove(
-        'open'
-      );
+      nav.classList.remove('open');
 
       ham.setAttribute(
         'aria-expanded',
         'false'
       );
-
     }
 
-    ham.addEventListener(
-      'click',
-      e => {
 
-        e.preventDefault();
-        e.stopPropagation();
+    ham.addEventListener('click',e=>{
 
-        const isOpen =
-          nav.classList.toggle(
-            'open'
-          );
+      e.preventDefault();
+      e.stopPropagation();
 
-        ham.setAttribute(
-          'aria-expanded',
-          isOpen
-            ? 'true'
-            : 'false'
-        );
+      const isOpen =
+        nav.classList.toggle('open');
 
+      ham.setAttribute(
+        'aria-expanded',
+        isOpen ? 'true' : 'false'
+      );
+    });
+
+
+    /* Close after clicking a menu link */
+    nav.addEventListener('click',e=>{
+
+      if(e.target.closest('a')){
+        closeMenu();
       }
-    );
+    });
 
-    nav.addEventListener(
-      'click',
-      e => {
 
-        if(
-          e.target.closest('a')
-        ){
+    /* Close when clicking outside menu */
+    document.addEventListener('click',e=>{
 
-          closeMenu();
-
-        }
-
+      if(
+        nav.classList.contains('open') &&
+        !nav.contains(e.target) &&
+        !ham.contains(e.target)
+      ){
+        closeMenu();
       }
-    );
 
-    document.addEventListener(
-      'click',
-      e => {
+    });
 
-        if(
-          nav.classList.contains('open') &&
-          !nav.contains(e.target) &&
-          !ham.contains(e.target)
-        ){
 
-          closeMenu();
+    /* Close when returning to desktop */
+    window.addEventListener('resize',()=>{
 
-        }
-
+      if(window.innerWidth > 760){
+        closeMenu();
       }
-    );
 
-    window.addEventListener(
-      'resize',
-      () => {
-
-        if(
-          window.innerWidth > 760
-        ){
-
-          closeMenu();
-
-        }
-
-      }
-    );
+    });
 
   }
-
 
 
   /* =========================================================
@@ -445,76 +231,57 @@
     const status =
       $('#formStatus');
 
-    const pending =
-      () => {
 
-        return JSON.parse(
-          localStorage.getItem(
-            'mrvc_pending'
-          ) || '[]'
-        );
+    const pending = () =>
+      JSON.parse(
+        localStorage.getItem('mrvc_pending') || '[]'
+      );
 
-      };
 
-    const save =
-      x => {
+    const save = x =>
+      localStorage.setItem(
+        'mrvc_pending',
+        JSON.stringify(x)
+      );
 
-        localStorage.setItem(
-          'mrvc_pending',
-          JSON.stringify(x)
-        );
-
-      };
 
     async function flush(){
 
-      let q =
-        pending();
+      let q = pending();
 
       if(!q.length) return;
 
-      for(
-        const item of [...q]
-      ){
+
+      for(const item of [...q]){
 
         try{
 
           const r =
             await fetch(
-
               (
-                location.protocol ===
-                'file:'
-
+                location.protocol === 'file:'
                   ? 'http://localhost:3000'
-
                   : ''
-
-              ) +
-              '/api/contact',
-
+              ) + '/api/contact',
               {
+                method:'POST',
 
-                method: 'POST',
-
-                headers: {
+                headers:{
                   'Content-Type':
                     'application/json'
                 },
 
                 body:
                   JSON.stringify(item)
-
               }
-
             );
+
 
           if(r.ok){
 
             q =
               q.filter(
-                x =>
-                  x !== item
+                x => x !== item
               );
 
           }
@@ -527,11 +294,13 @@
 
       }
 
-      save(q);
 
+      save(q);
     }
 
+
     flush();
+
 
     form.addEventListener(
       'submit',
@@ -539,58 +308,51 @@
 
         e.preventDefault();
 
+
         const x =
           Object.fromEntries(
-            new FormData(
-              form
-            ).entries()
+            new FormData(form).entries()
           );
+
 
         status.textContent =
           'Sending…';
+
 
         try{
 
           const r =
             await fetch(
-
               (
-                location.protocol ===
-                'file:'
-
+                location.protocol === 'file:'
                   ? 'http://localhost:3000'
-
                   : ''
-
-              ) +
-              '/api/contact',
-
+              ) + '/api/contact',
               {
+                method:'POST',
 
-                method: 'POST',
-
-                headers: {
+                headers:{
                   'Content-Type':
                     'application/json'
                 },
 
                 body:
                   JSON.stringify(x)
-
               }
-
             );
 
+
           if(!r.ok){
-
             throw new Error();
-
           }
+
 
           status.textContent =
             'Message sent successfully.';
 
+
           form.reset();
+
 
         }catch(err){
 
@@ -601,16 +363,14 @@
 
           save(q);
 
+
           status.textContent =
             'Saved offline — it will sync when the backend is available.';
-
         }
 
       }
     );
-
   }
-
 
 
   /* =========================================================
@@ -623,121 +383,83 @@
   if(admin){
 
     fetch(
-
       (
-        location.protocol ===
-        'file:'
-
+        location.protocol === 'file:'
           ? 'http://localhost:3000'
-
           : ''
-
-      ) +
-      '/api/messages'
-
+      ) + '/api/messages'
     )
 
-    .then(
-      r => r.json()
-    )
+    .then(r => r.json())
 
-    .then(
-      items => {
+    .then(items => {
 
-        admin.innerHTML =
-          items.length
+      admin.innerHTML =
+        items.length
 
-            ? items.map(
-                x => `
+          ? items.map(x => `
 
-                  <article class="panel">
+              <article class="panel">
 
-                    <strong>
-                      ${escape(x.name)}
-                    </strong>
+                <strong>
+                  ${escape(x.name)}
+                </strong>
 
-                    <div>
-                      ${escape(x.email)}
-                      ${
-                        x.phone
-                          ? ' · ' +
-                            escape(x.phone)
-                          : ''
-                      }
-                      ·
-                      ${
-                        new Date(
-                          x.createdAt
-                        ).toLocaleString()
-                      }
-                    </div>
+                <div>
+                  ${escape(x.email)}
+                  ${x.phone
+                    ? ' · ' + escape(x.phone)
+                    : ''
+                  }
+                  ·
+                  ${new Date(
+                    x.createdAt
+                  ).toLocaleString()}
+                </div>
 
-                    <p>
+                <p>
 
-                      ${
-                        x.project
+                  ${
+                    x.project
+                      ? '<strong>Project:</strong> ' +
+                        escape(x.project) +
+                        '<br>'
+                      : ''
+                  }
 
-                          ? '<strong>Project:</strong> ' +
-                            escape(x.project) +
-                            '<br>'
+                  ${escape(x.message)}
 
-                          : ''
-                      }
+                </p>
 
-                      ${escape(x.message)}
+              </article>
 
-                    </p>
+            `).join('')
 
-                  </article>
+          : '<div class="panel">No messages yet.</div>';
 
-                `
-              ).join('')
+    })
 
-            : '<div class="panel">No messages yet.</div>';
+    .catch(()=>{
 
-      }
-    )
+      admin.innerHTML =
+        '<div class="panel">Backend unavailable.</div>';
 
-    .catch(
-      () => {
-
-        admin.innerHTML =
-          '<div class="panel">Backend unavailable.</div>';
-
-      }
-    );
+    });
 
   }
 
 
-
-  /* ---------------------------------------------------------
-     ESCAPE HTML
-     --------------------------------------------------------- */
-
+  /* Escape HTML */
   function escape(s){
 
-    return String(
-      s || ''
-    ).replace(
+    return String(s || '').replace(
       /[&<>"']/g,
       m => ({
-
-        '&':
-          '&amp;',
-
-        '<':
-          '&lt;',
-
-        '>':
-          '&gt;',
-
-        '"':
-          '&quot;',
-
-        "'":
-          '&#039;'
-
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#039;'
       }[m])
     );
 
@@ -746,15 +468,12 @@
 })();
 
 
-
 /* =========================================================
    PROJECT SLIDER
    ========================================================= */
 
 const slides =
-  document.querySelector(
-    '#slides'
-  );
+  document.querySelector('#slides');
 
 if(slides){
 
@@ -767,76 +486,57 @@ if(slides){
       )
     ];
 
-  const go =
-    n => {
 
-      i =
-        (n + 3) % 3;
+  const go = n => {
 
-      slides.style.transform =
-        `translateX(-${i * 100}%)`;
+    i = (n + 3) % 3;
 
-      dots.forEach(
-        (d,k) => {
+    slides.style.transform =
+      `translateX(-${i * 100}%)`;
 
-          d.classList.toggle(
-            'on',
-            k === i
-          );
+    dots.forEach(
+      (d,k) =>
+        d.classList.toggle(
+          'on',
+          k === i
+        )
+    );
 
-        }
-      );
+  };
 
-    };
 
   dots.forEach(
-    d => {
-
+    d =>
       d.onclick =
-        () => go(
-          +d.dataset.slide
-        );
-
-    }
+        () => go(+d.dataset.slide)
   );
 
+
   const prev =
-    document.querySelector(
-      '#prev'
-    );
+    document.querySelector('#prev');
 
   const next =
-    document.querySelector(
-      '#next'
-    );
+    document.querySelector('#next');
+
 
   if(prev){
-
     prev.onclick =
-      () => go(
-        i - 1
-      );
-
+      () => go(i - 1);
   }
+
 
   if(next){
-
     next.onclick =
-      () => go(
-        i + 1
-      );
-
+      () => go(i + 1);
   }
 
+
   setInterval(
-    () => go(
-      i + 1
-    ),
+    () => go(i + 1),
     6500
   );
 
 }
-
 
 
 /* =========================================================
@@ -848,15 +548,9 @@ document.addEventListener(
   e => {
 
     if(
-
       (e.ctrlKey || e.metaKey) &&
-
       e.key.toLowerCase() === 'p' &&
-
-      document.body.classList.contains(
-        'cvBody'
-      )
-
+      document.body.classList.contains('cvBody')
     ){
 
       e.preventDefault();
@@ -869,7 +563,6 @@ document.addEventListener(
 );
 
 
-
 /* =========================================================
    DESKTOP PROJECT CARD POINTER LIGHTING
    ========================================================= */
@@ -877,662 +570,166 @@ document.addEventListener(
 (function(){
 
   if(
-
     window.matchMedia(
       '(pointer:fine)'
     ).matches
-
   ){
 
     document
       .querySelectorAll(
         '.luxWorkGrid .workCard'
       )
-      .forEach(
-        card => {
+      .forEach(card => {
 
-          card.addEventListener(
-            'pointermove',
-            e => {
+        card.addEventListener(
+          'pointermove',
+          e => {
 
-              const r =
-                card.getBoundingClientRect();
+            const r =
+              card.getBoundingClientRect();
 
-              card.style.setProperty(
-                '--mx',
 
-                (
-                  (
-                    e.clientX -
-                    r.left
-                  ) /
-                  r.width *
-                  100
+            card.style.setProperty(
+              '--mx',
+              (
+                (e.clientX - r.left) /
+                r.width *
+                100
+              ) + '%'
+            );
 
-                ) + '%'
-              );
 
-              card.style.setProperty(
-                '--my',
+            card.style.setProperty(
+              '--my',
+              (
+                (e.clientY - r.top) /
+                r.height *
+                100
+              ) + '%'
+            );
 
-                (
-                  (
-                    e.clientY -
-                    r.top
-                  ) /
-                  r.height *
-                  100
+          }
+        );
 
-                ) + '%'
-              );
-
-            }
-          );
-
-        }
-      );
+      });
 
   }
 
 })();
-
 
 
 /* =========================================================
    OPENING INTRO + HERO TYPEWRITER
+   Play on a fresh/direct Home visit or a real browser refresh.
+   Do not replay when navigating internally back to Home.
    ========================================================= */
-
 (function(){
-
-  const intro =
-    document.getElementById(
-      'typingIntro'
-    );
-
-  const introText =
-    document.getElementById(
-      'typingText'
-    );
-
-  const hero =
-    document.querySelector(
-      '.heroTitleType'
-    );
-
-  /*
-     IMPORTANT:
-     Agar kisi page par opening intro ya Hero maujood nahi,
-     to baqi website JS normal tarah se kaam karegi.
-  */
-
-  if(
-    !hero
-  ){
-    return;
-  }
-
-
-
-  /* ---------------------------------------------------------
-     HERO TEXT
-     ---------------------------------------------------------
-
-     FINAL TEXT:
-
-     Crafting Digital
-     Experiences.
-
-     --------------------------------------------------------- */
-
-  const heroParts = [
-
-    {
-      text: 'Crafting',
-      className: 'white',
-      breakAfter: false
-    },
-
-    {
-      text: 'Digital',
-      className: 'lime',
-      breakAfter: true
-    },
-
-    {
-      text: 'Experiences.',
-      className: 'white',
-      breakAfter: false
-    }
-
-  ];
-
-
-
-  /* ---------------------------------------------------------
-     MOTION PREFERENCE
-     --------------------------------------------------------- */
-
-  const reduce =
-    window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
-
-
-
-  /* ---------------------------------------------------------
-     NAVIGATION TYPE
-     --------------------------------------------------------- */
-
-  const navEntry =
-    performance.getEntriesByType(
-      'navigation'
-    )[0];
-
-  const navType =
-    navEntry
-      ? navEntry.type
-      : 'navigate';
-
-
-
-  /* ---------------------------------------------------------
-     REFERRER
-     --------------------------------------------------------- */
-
-  const ref =
-    document.referrer || '';
-
-  let sameOriginRef =
-    false;
-
-  try{
-
-    sameOriginRef =
-      ref
-        ? new URL(
-            ref
-          ).origin ===
-          location.origin
-        : false;
-
-  }catch(e){}
-
-
-
-  /* ---------------------------------------------------------
-     HOME SKIP PARAMETER
-     --------------------------------------------------------- */
-
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
-
-  const skipHomeIntro =
-    params.get(
-      'skipHomeIntro'
-    ) === '1';
-
-  if(skipHomeIntro){
-
-    history.replaceState(
-      {},
-      document.title,
-      window.location.pathname +
-      window.location.hash
-    );
-
-  }
-
-
-
-  /* ---------------------------------------------------------
-     SHOULD INTRO PLAY?
-     --------------------------------------------------------- */
-
-  const shouldPlayIntro =
-    !skipHomeIntro &&
-    (
-      navType === 'reload' ||
-      !sameOriginRef
-    );
-
-
-
-  /* ---------------------------------------------------------
-     INTRO TEXT
-     --------------------------------------------------------- */
-
-  const introLine =
-    'UBAIDULLAH  •  DESIGN  •  DIGITAL  •  AI';
-
-
-
-  /* =========================================================
-     BUILD HERO EMPTY
-     ========================================================= */
-
-  function buildHeroEmpty(){
-
-    hero.innerHTML = '';
-
-    hero.style.visibility =
-      'visible';
-
-    hero.style.opacity =
-      '1';
-
-    hero.dataset.typingStarted =
-      '1';
-
-    hero.classList.add(
-      'typingStarted'
-    );
-
-  }
-
-
-
-  /* =========================================================
-     SHOW HERO IMMEDIATELY
-     ========================================================= */
-
-  function showHeroImmediately(){
-
-    hero.innerHTML = `
-      <span class="typeWord white">Crafting</span>
-      <span class="typeWord lime">Digital</span><br>
-      <span class="typeWord white">Experiences.</span>
-    `;
-
-    hero.style.visibility =
-      'visible';
-
-    hero.style.opacity =
-      '1';
-
-    hero.dataset.typingStarted =
-      '1';
-
-    hero.classList.add(
-      'typingStarted',
-      'typingDone'
-    );
-
-    /*
-       CSS ke hidden/typewriter rules ko override karne
-       ke liye inline visibility/opacity already set hain.
-    */
-
-    hero.querySelectorAll(
-      '.typeWord'
-    ).forEach(
-      word => {
-
-        word.style.visibility =
-          'visible';
-
-        word.style.opacity =
-          '1';
-
-        word.style.transform =
-          'none';
-
-      }
-    );
-
-  }
-
-
-
-  /* =========================================================
-     FINISH INTRO
-     ========================================================= */
-
-  function finishIntro(){
-
-    if(intro){
-
-      intro.classList.add(
-        'hide'
-      );
-
-    }
-
-    window.dispatchEvent(
-      new Event(
-        'mrvcIntroDone'
-      )
-    );
-
-  }
-
-
-
-  /* =========================================================
-     START HERO TYPEWRITER
-     ========================================================= */
-
-  function startHeroTyping(){
-
-    if(
-      hero.dataset.typingStarted ===
-      '1'
-    ){
-
-      return;
-
-    }
-
-    buildHeroEmpty();
-
-    const words =
-      [];
-
-    heroParts.forEach(
-      (part, index) => {
-
-        const span =
-          document.createElement(
-            'span'
-          );
-
-        span.className =
-          'typeWord ' +
-          part.className;
-
-        hero.appendChild(
-          span
-        );
-
-        words.push(
-          span
-        );
-
-        /*
-           Digital ke baad line break.
-           Crafting + Digital same line.
-        */
-
-        if(part.breakAfter){
-
-          hero.appendChild(
-            document.createElement(
-              'br'
-            )
-          );
-
-        }else if(
-          index <
-          heroParts.length - 1
-        ){
-
-          /*
-             Crafting aur Digital ke darmiyan
-             normal space.
-          */
-
-          hero.appendChild(
-            document.createTextNode(
-              ' '
-            )
-          );
-
+  const intro=document.getElementById('typingIntro');
+  const introText=document.getElementById('typingText');
+  const hero=document.querySelector('.heroTitleType');
+  if(!intro || !introText || !hero) return;
+
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nav=performance.getEntriesByType('navigation')[0];
+  const navType=nav ? nav.type : 'navigate';
+  const ref=document.referrer || '';
+  let sameOriginRef=false;
+  try { sameOriginRef=ref ? new URL(ref).origin===location.origin : false; } catch(e) {}
+
+  // Direct/fresh Home load or browser refresh = play.
+  // Internal navigation (Contact -> Home, Work -> Home, etc.) = do not replay.
+  let skipReturn=window.__mrvcSkipHomeIntro===true;
+
+  const shouldPlayIntro = !skipReturn && (navType === 'reload' || !sameOriginRef);
+
+  const introLine='UBAIDULLAH  •  DESIGN  •  DIGITAL  •  AI';
+
+  const showHeroImmediately=()=>{
+    hero.querySelectorAll('.heroTypeCursor').forEach(x=>x.remove());
+    hero.querySelectorAll('.typeChar').forEach(x=>{
+      x.classList.add('shown');
+      x.style.animation='none';
+    });
+    hero.dataset.typingStarted='1';
+    hero.classList.add('typingStarted','typingDone');
+  };
+
+  const finishIntro=()=>{
+    intro.classList.add('hide');
+    window.dispatchEvent(new Event('mrvcIntroDone'));
+  };
+
+  const startHeroTyping=()=>{
+    if(hero.dataset.typingStarted==='1') return;
+    hero.dataset.typingStarted='1';
+
+    const parts=[...hero.querySelectorAll('.typeWord')];
+    let delay=0;
+    const speed=92;
+
+    hero.querySelectorAll('.heroTypeCursor').forEach(x=>x.remove());
+
+    parts.forEach((part, partIndex)=>{
+      const text=part.textContent;
+      part.textContent='';
+      [...text].forEach(ch=>{
+        const span=document.createElement('span');
+        span.className='typeChar';
+        span.textContent=ch;
+        part.appendChild(span);
+        if(reduce){
+          span.classList.add('shown');
+        }else{
+          span.style.animationDelay=delay+'ms';
+          delay+=speed;
         }
+      });
+      if(partIndex < parts.length-1) delay+=220;
+    });
 
-      }
-    );
-
-
-
-    /* -------------------------------------------------------
-       REDUCED MOTION
-       ------------------------------------------------------- */
+    const finalPart=parts[parts.length-1];
+    const cursor=document.createElement('span');
+    cursor.className='heroTypeCursor';
+    cursor.setAttribute('aria-hidden','true');
+    finalPart.appendChild(cursor);
+    hero.classList.add('typingStarted');
 
     if(reduce){
-
-      words.forEach(
-        (word,index) => {
-
-          word.textContent =
-            heroParts[index].text;
-
-          word.style.visibility =
-            'visible';
-
-          word.style.opacity =
-            '1';
-
-        }
-      );
-
-      hero.classList.add(
-        'typingDone'
-      );
-
-      return;
-
+      hero.classList.add('typingDone');
+    }else{
+      setTimeout(()=>hero.classList.add('typingDone'),delay+180);
     }
+  };
 
-
-
-    /* -------------------------------------------------------
-       TYPE CHARACTER BY CHARACTER
-       ------------------------------------------------------- */
-
-    let partIndex =
-      0;
-
-    let charIndex =
-      0;
-
-    const speed =
-      65;
-
-
-
-    function typeNext(){
-
-      if(
-        partIndex >=
-        heroParts.length
-      ){
-
-        hero.classList.add(
-          'typingDone'
-        );
-
-        /*
-           Final safety check:
-           Hero ko visible rakho.
-        */
-
-        hero.style.visibility =
-          'visible';
-
-        hero.style.opacity =
-          '1';
-
-        return;
-
-      }
-
-
-      const currentWord =
-        words[partIndex];
-
-      const currentText =
-        heroParts[
-          partIndex
-        ].text;
-
-
-      if(
-        charIndex <
-        currentText.length
-      ){
-
-        const char =
-          document.createElement(
-            'span'
-          );
-
-        char.className =
-          'typeChar shown';
-
-        char.textContent =
-          currentText.charAt(
-            charIndex
-          );
-
-        currentWord.appendChild(
-          char
-        );
-
-        charIndex++;
-
-        setTimeout(
-          typeNext,
-          speed
-        );
-
-      }else{
-
-        partIndex++;
-
-        charIndex =
-          0;
-
-        setTimeout(
-          typeNext,
-          220
-        );
-
-      }
-
-    }
-
-
-    typeNext();
-
-  }
-
-
-
-  /* =========================================================
-     NO INTRO ELEMENT
-     =========================================================
-
-     Agar kisi page par typingIntro nahi hai,
-     Hero ko direct show kar do.
-     ========================================================= */
-
-  if(!intro || !introText){
-
-    showHeroImmediately();
-
-    return;
-
-  }
-
-
-
-  /* =========================================================
-     INTERNAL HOME NAVIGATION
-     ========================================================= */
-
+  // Internal navigation: no intro, no re-typing, show the finished hero immediately.
   if(!shouldPlayIntro){
-
-    intro.classList.add(
-      'hide'
-    );
-
+    intro.classList.add('hide');
     showHeroImmediately();
-
     return;
-
   }
-
-
-
-  /* =========================================================
-     REDUCED MOTION INTRO
-     ========================================================= */
 
   if(reduce){
-
-    introText.textContent =
-      introLine;
-
-    setTimeout(
-      () => {
-
-        finishIntro();
-
-        setTimeout(
-          startHeroTyping,
-          450
-        );
-
-      },
-      1700
-    );
-
+    introText.textContent=introLine;
+    setTimeout(()=>{
+      finishIntro();
+      setTimeout(startHeroTyping,450);
+    },1700);
     return;
-
   }
 
-
-
-  /* =========================================================
-     OPENING INTRO TYPEWRITER
-     ========================================================= */
-
-  let introIndex =
-    0;
-
-  function typeIntro(){
-
-    introText.textContent =
-      introLine.slice(
-        0,
-        introIndex++
-      );
-
-    if(
-      introIndex <=
-      introLine.length
-    ){
-
-      setTimeout(
-        typeIntro,
-        48
-      );
-
+  let i=0;
+  const typeIntro=()=>{
+    introText.textContent=introLine.slice(0,i++);
+    if(i<=introLine.length){
+      setTimeout(typeIntro,48);
     }else{
-
-      setTimeout(
-        () => {
-
-          finishIntro();
-
-          setTimeout(
-            startHeroTyping,
-            500
-          );
-
-        },
-        1050
-      );
-
+      setTimeout(()=>{
+        finishIntro();
+        setTimeout(startHeroTyping,500);
+      },1050);
     }
+  };
 
-  }
-
-
-  setTimeout(
-    typeIntro,
-    450
-  );
-
+  setTimeout(typeIntro,450);
 })();
+
