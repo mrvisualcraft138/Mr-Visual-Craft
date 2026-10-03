@@ -3,45 +3,88 @@
   document.addEventListener('click', function(e){
     const a=e.target.closest && e.target.closest('a[href]');
     if(!a) return;
+
     const raw=a.getAttribute('href') || '';
-    if(!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:') || a.target==='_blank') return;
+
+    if(
+      !raw ||
+      raw.startsWith('#') ||
+      raw.startsWith('mailto:') ||
+      raw.startsWith('tel:') ||
+      a.target==='_blank'
+    ) return;
+
     try{
       const u=new URL(raw, location.href);
-      const isHome=u.origin===location.origin && (u.pathname==='/' || u.pathname.endsWith('/index.html'));
-      const onHome=(location.pathname==='/' || location.pathname.endsWith('/index.html'));
+
+      const isHome =
+        u.origin===location.origin &&
+        (
+          u.pathname==='/' ||
+          u.pathname.endsWith('/index.html')
+        );
+
+      const onHome =
+        location.pathname==='/' ||
+        location.pathname.endsWith('/index.html');
+
       if(isHome && !onHome){
         e.preventDefault();
-        const target=u.pathname + '?skipHomeIntro=1' + (u.hash||'');
+
+        const target =
+          u.pathname +
+          '?skipHomeIntro=1' +
+          (u.hash||'');
+
         location.href=target;
       }
+
     }catch(_){}
   }, true);
 })();
 
+
 /* MR VISUALCRAFT theme control */
 (function(){
-  const saved = localStorage.getItem('mrvc_theme');
+
+  const saved =
+    localStorage.getItem('mrvc_theme');
 
   if(saved === 'light'){
-    document.documentElement.classList.add('light-theme');
+    document.documentElement.classList.add(
+      'light-theme'
+    );
   }
 
   function mountThemeToggle(){
-    const actions = document.querySelector('.navActions');
 
-    if(!actions || actions.querySelector('.themeToggle')) return;
+    const actions =
+      document.querySelector('.navActions');
 
-    const b = document.createElement('button');
-    b.className = 'themeToggle';
-    b.type = 'button';
-    b.setAttribute('aria-label','Toggle dark and light theme');
-    b.title = 'Toggle dark / light mode';
+    if(
+      !actions ||
+      actions.querySelector('.themeToggle')
+    ) return;
+
+    const b =
+      document.createElement('button');
+
+    b.className='themeToggle';
+    b.type='button';
+
+    b.setAttribute(
+      'aria-label',
+      'Toggle dark and light theme'
+    );
+
+    b.title='Toggle dark / light mode';
 
     b.innerHTML =
       '<span class="moon" aria-hidden="true">☾</span>' +
       '<span class="sun" aria-hidden="true">☀</span>';
 
-    const first = actions.querySelector('.btn');
+    const first =
+      actions.querySelector('.btn');
 
     actions.insertBefore(
       b,
@@ -49,24 +92,34 @@
     );
 
     b.addEventListener('click',()=>{
+
       const light =
-        document.documentElement.classList.toggle('light-theme');
+        document.documentElement.classList.toggle(
+          'light-theme'
+        );
 
       localStorage.setItem(
         'mrvc_theme',
         light ? 'light' : 'dark'
       );
+
     });
+
   }
 
   if(document.readyState === 'loading'){
+
     document.addEventListener(
       'DOMContentLoaded',
       mountThemeToggle
     );
+
   }else{
+
     mountThemeToggle();
+
   }
+
 })();
 
 
@@ -76,7 +129,8 @@
 
 (function(){
 
-  const $ = s => document.querySelector(s);
+  const $ =
+    s => document.querySelector(s);
 
   const path =
     location.pathname.replace(/\\/g,'/');
@@ -85,15 +139,19 @@
   /* Active navigation link */
   const active =
     [...document.querySelectorAll('.links a')].find(a =>
+
       a.getAttribute('href') === path ||
+
       (
         path.startsWith('/work/') &&
         a.getAttribute('href') === '/work'
       ) ||
+
       (
         path.startsWith('/services/') &&
         a.getAttribute('href') === '/services'
       )
+
     );
 
   if(active){
@@ -105,14 +163,22 @@
   const glow =
     document.createElement('div');
 
-  glow.className = 'cursorGlow';
+  glow.className='cursorGlow';
 
   document.body.appendChild(glow);
 
-  document.addEventListener('pointermove',e=>{
-    glow.style.left = e.clientX + 'px';
-    glow.style.top = e.clientY + 'px';
-  });
+  document.addEventListener(
+    'pointermove',
+    e => {
+
+      glow.style.left =
+        e.clientX + 'px';
+
+      glow.style.top =
+        e.clientY + 'px';
+
+    }
+  );
 
 
   /* Scroll reveal animations */
@@ -140,6 +206,7 @@
         (Math.min(i,8) * 45) + 'ms';
 
       obs.observe(e);
+
     });
 
 
@@ -147,8 +214,11 @@
      MOBILE MENU FIX
      ========================================================= */
 
-  const ham = $('.hamb');
-  const nav = $('.links');
+  const ham =
+    $('.hamb');
+
+  const nav =
+    $('.links');
 
   if(ham && nav){
 
@@ -166,55 +236,72 @@
         'aria-expanded',
         'false'
       );
+
     }
 
 
-    ham.addEventListener('click',e=>{
+    ham.addEventListener(
+      'click',
+      e => {
 
-      e.preventDefault();
-      e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
 
-      const isOpen =
-        nav.classList.toggle('open');
+        const isOpen =
+          nav.classList.toggle('open');
 
-      ham.setAttribute(
-        'aria-expanded',
-        isOpen ? 'true' : 'false'
-      );
-    });
+        ham.setAttribute(
+          'aria-expanded',
+          isOpen ? 'true' : 'false'
+        );
+
+      }
+    );
 
 
     /* Close after clicking a menu link */
-    nav.addEventListener('click',e=>{
+    nav.addEventListener(
+      'click',
+      e => {
 
-      if(e.target.closest('a')){
-        closeMenu();
+        if(e.target.closest('a')){
+          closeMenu();
+        }
+
       }
-    });
+    );
 
 
     /* Close when clicking outside menu */
-    document.addEventListener('click',e=>{
+    document.addEventListener(
+      'click',
+      e => {
 
-      if(
-        nav.classList.contains('open') &&
-        !nav.contains(e.target) &&
-        !ham.contains(e.target)
-      ){
-        closeMenu();
+        if(
+          nav.classList.contains('open') &&
+          !nav.contains(e.target) &&
+          !ham.contains(e.target)
+        ){
+
+          closeMenu();
+
+        }
+
       }
-
-    });
+    );
 
 
     /* Close when returning to desktop */
-    window.addEventListener('resize',()=>{
+    window.addEventListener(
+      'resize',
+      () => {
 
-      if(window.innerWidth > 760){
-        closeMenu();
+        if(window.innerWidth > 760){
+          closeMenu();
+        }
+
       }
-
-    });
+    );
 
   }
 
@@ -234,7 +321,9 @@
 
     const pending = () =>
       JSON.parse(
-        localStorage.getItem('mrvc_pending') || '[]'
+        localStorage.getItem(
+          'mrvc_pending'
+        ) || '[]'
       );
 
 
@@ -247,7 +336,8 @@
 
     async function flush(){
 
-      let q = pending();
+      let q =
+        pending();
 
       if(!q.length) return;
 
@@ -296,6 +386,7 @@
 
 
       save(q);
+
     }
 
 
@@ -366,10 +457,12 @@
 
           status.textContent =
             'Saved offline — it will sync when the backend is available.';
+
         }
 
       }
     );
+
   }
 
 
@@ -489,7 +582,8 @@ if(slides){
 
   const go = n => {
 
-    i = (n + 3) % 3;
+    i =
+      (n + 3) % 3;
 
     slides.style.transform =
       `translateX(-${i * 100}%)`;
@@ -619,117 +713,387 @@ document.addEventListener(
 
 
 /* =========================================================
-   OPENING INTRO + HERO TYPEWRITER
-   Play on a fresh/direct Home visit or a real browser refresh.
-   Do not replay when navigating internally back to Home.
+   OPENING INTRO + HARD-CODED HERO TYPEWRITER
+   Hero text:
+   Freelance Creative Designer & Developer
    ========================================================= */
+
 (function(){
-  const intro=document.getElementById('typingIntro');
-  const introText=document.getElementById('typingText');
-  const hero=document.querySelector('.heroTitleType');
-  if(!intro || !introText || !hero) return;
 
-  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const nav=performance.getEntriesByType('navigation')[0];
-  const navType=nav ? nav.type : 'navigate';
-  const ref=document.referrer || '';
-  let sameOriginRef=false;
-  try { sameOriginRef=ref ? new URL(ref).origin===location.origin : false; } catch(e) {}
+  const intro =
+    document.getElementById('typingIntro');
 
-  // Direct/fresh Home load or browser refresh = play.
-  // Internal navigation (Contact -> Home, Work -> Home, etc.) = do not replay.
-  let skipReturn=window.__mrvcSkipHomeIntro===true;
+  const introText =
+    document.getElementById('typingText');
 
-  const shouldPlayIntro = !skipReturn && (navType === 'reload' || !sameOriginRef);
+  const hero =
+    document.querySelector('.heroTitleType');
 
-  const introLine='UBAIDULLAH  •  DESIGN  •  DIGITAL  •  AI';
+  if(
+    !intro ||
+    !introText ||
+    !hero
+  ) return;
 
-  const showHeroImmediately=()=>{
-    hero.querySelectorAll('.heroTypeCursor').forEach(x=>x.remove());
-    hero.querySelectorAll('.typeChar').forEach(x=>{
-      x.classList.add('shown');
-      x.style.animation='none';
-    });
-    hero.dataset.typingStarted='1';
-    hero.classList.add('typingStarted','typingDone');
-  };
 
-  const finishIntro=()=>{
-    intro.classList.add('hide');
-    window.dispatchEvent(new Event('mrvcIntroDone'));
-  };
+  /* Exact hard-coded Hero text */
+  const heroText =
+    'Freelance Creative Designer & Developer';
 
-  const startHeroTyping=()=>{
-    if(hero.dataset.typingStarted==='1') return;
-    hero.dataset.typingStarted='1';
 
-    const parts=[...hero.querySelectorAll('.typeWord')];
-    let delay=0;
-    const speed=92;
+  const reduce =
+    window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
 
-    hero.querySelectorAll('.heroTypeCursor').forEach(x=>x.remove());
 
-    parts.forEach((part, partIndex)=>{
-      const text=part.textContent;
-      part.textContent='';
-      [...text].forEach(ch=>{
-        const span=document.createElement('span');
-        span.className='typeChar';
-        span.textContent=ch;
-        part.appendChild(span);
-        if(reduce){
-          span.classList.add('shown');
-        }else{
-          span.style.animationDelay=delay+'ms';
-          delay+=speed;
-        }
-      });
-      if(partIndex < parts.length-1) delay+=220;
-    });
+  const nav =
+    performance.getEntriesByType(
+      'navigation'
+    )[0];
 
-    const finalPart=parts[parts.length-1];
-    const cursor=document.createElement('span');
-    cursor.className='heroTypeCursor';
-    cursor.setAttribute('aria-hidden','true');
-    finalPart.appendChild(cursor);
-    hero.classList.add('typingStarted');
+  const navType =
+    nav ? nav.type : 'navigate';
 
-    if(reduce){
-      hero.classList.add('typingDone');
-    }else{
-      setTimeout(()=>hero.classList.add('typingDone'),delay+180);
-    }
-  };
 
-  // Internal navigation: no intro, no re-typing, show the finished hero immediately.
-  if(!shouldPlayIntro){
-    intro.classList.add('hide');
-    showHeroImmediately();
-    return;
+  const ref =
+    document.referrer || '';
+
+
+  let sameOriginRef =
+    false;
+
+
+  try{
+
+    sameOriginRef =
+      ref
+        ? new URL(ref).origin === location.origin
+        : false;
+
+  }catch(e){}
+
+
+  /* Read Home navigation flag */
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const skipHomeIntro =
+    params.get('skipHomeIntro') === '1';
+
+
+  /* Remove skipHomeIntro from address bar */
+  if(skipHomeIntro){
+
+    history.replaceState(
+      {},
+      document.title,
+      window.location.pathname +
+      window.location.hash
+    );
+
   }
+
+
+  /*
+    Fresh/direct Home visit or browser refresh:
+    play opening intro + hero typing.
+
+    Internal navigation back to Home:
+    skip opening animation and show Hero immediately.
+  */
+  const shouldPlayIntro =
+    !skipHomeIntro &&
+    (
+      navType === 'reload' ||
+      !sameOriginRef
+    );
+
+
+  const introLine =
+    'UBAIDULLAH  •  DESIGN  •  DIGITAL  •  AI';
+
+
+  /* =========================================================
+     SHOW HERO IMMEDIATELY
+     ========================================================= */
+
+  const showHeroImmediately = () => {
+
+    hero.querySelectorAll(
+      '.heroTypeCursor'
+    ).forEach(
+      x => x.remove()
+    );
+
+
+    /*
+      Hard-coded Hero text.
+      This guarantees the original text
+      always appears correctly.
+    */
+    hero.innerHTML = `
+      <span class="typeWord">
+        ${heroText}
+      </span>
+    `;
+
+
+    hero.style.visibility =
+      'visible';
+
+    hero.style.opacity =
+      '1';
+
+
+    hero.dataset.typingStarted =
+      '1';
+
+
+    hero.classList.add(
+      'typingStarted',
+      'typingDone'
+    );
+
+  };
+
+
+  /* =========================================================
+     FINISH OPENING INTRO
+     ========================================================= */
+
+  const finishIntro = () => {
+
+    intro.classList.add('hide');
+
+    window.dispatchEvent(
+      new Event('mrvcIntroDone')
+    );
+
+  };
+
+
+  /* =========================================================
+     START HERO TYPEWRITER
+     ========================================================= */
+
+  const startHeroTyping = () => {
+
+    if(
+      hero.dataset.typingStarted === '1'
+    ) return;
+
+
+    hero.dataset.typingStarted =
+      '1';
+
+
+    /* Clear any old Hero content */
+    hero.innerHTML = '';
+
+
+    const word =
+      document.createElement('span');
+
+    word.className =
+      'typeWord';
+
+
+    hero.appendChild(word);
+
+
+    hero.style.visibility =
+      'visible';
+
+    hero.style.opacity =
+      '1';
+
+
+    hero.classList.add(
+      'typingStarted'
+    );
+
+
+    /* Reduced motion */
+    if(reduce){
+
+      word.textContent =
+        heroText;
+
+      hero.classList.add(
+        'typingDone'
+      );
+
+      return;
+
+    }
+
+
+    /* Animated cursor */
+    const cursor =
+      document.createElement('span');
+
+    cursor.className =
+      'heroTypeCursor';
+
+    cursor.setAttribute(
+      'aria-hidden',
+      'true'
+    );
+
+
+    word.appendChild(cursor);
+
+
+    let i = 0;
+
+    const speed = 65;
+
+
+    const typeNext = () => {
+
+      if(i < heroText.length){
+
+        const char =
+          document.createElement(
+            'span'
+          );
+
+        char.className =
+          'typeChar shown';
+
+        char.textContent =
+          heroText.charAt(i);
+
+
+        word.insertBefore(
+          char,
+          cursor
+        );
+
+
+        i++;
+
+
+        setTimeout(
+          typeNext,
+          speed
+        );
+
+      }else{
+
+        hero.classList.add(
+          'typingDone'
+        );
+
+      }
+
+    };
+
+
+    typeNext();
+
+  };
+
+
+  /* =========================================================
+     INTERNAL HOME NAVIGATION
+     ========================================================= */
+
+  if(!shouldPlayIntro){
+
+    intro.classList.add(
+      'hide'
+    );
+
+    showHeroImmediately();
+
+    return;
+
+  }
+
+
+  /* =========================================================
+     REDUCED MOTION
+     ========================================================= */
 
   if(reduce){
-    introText.textContent=introLine;
-    setTimeout(()=>{
-      finishIntro();
-      setTimeout(startHeroTyping,450);
-    },1700);
+
+    introText.textContent =
+      introLine;
+
+
+    setTimeout(
+      () => {
+
+        finishIntro();
+
+        setTimeout(
+          startHeroTyping,
+          450
+        );
+
+      },
+      1700
+    );
+
     return;
+
   }
 
-  let i=0;
-  const typeIntro=()=>{
-    introText.textContent=introLine.slice(0,i++);
-    if(i<=introLine.length){
-      setTimeout(typeIntro,48);
+
+  /* =========================================================
+     OPENING INTRO TYPEWRITER
+     ========================================================= */
+
+  let i = 0;
+
+
+  const typeIntro = () => {
+
+    introText.textContent =
+      introLine.slice(
+        0,
+        i++
+      );
+
+
+    if(
+      i <= introLine.length
+    ){
+
+      setTimeout(
+        typeIntro,
+        48
+      );
+
     }else{
-      setTimeout(()=>{
-        finishIntro();
-        setTimeout(startHeroTyping,500);
-      },1050);
+
+      setTimeout(
+        () => {
+
+          finishIntro();
+
+          setTimeout(
+            startHeroTyping,
+            500
+          );
+
+        },
+        1050
+      );
+
     }
+
   };
 
-  setTimeout(typeIntro,450);
-})();
 
+  setTimeout(
+    typeIntro,
+    450
+  );
+
+})();
