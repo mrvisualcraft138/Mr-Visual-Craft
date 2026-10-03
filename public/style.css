@@ -1563,7 +1563,7 @@ html.light-theme header.nav .links.open a.active{
 
 
 /* =========================================
-   HERO TITLE — SMOOTH JS TYPEWRITER
+   HERO TITLE — CLEAR TYPEWRITER EFFECT
    ========================================= */
 .heroTitleType{
   margin:22px 0;
@@ -1572,31 +1572,35 @@ html.light-theme header.nav .links.open a.active{
   letter-spacing:-.065em;
   font-weight:950;
   overflow:visible;
-  visibility:hidden;
 }
-
-.heroTitleType.typingStarted{
-  visibility:visible;
-}
-
-.heroTitleType .typeWord{
-  display:inline-block;
-  white-space:nowrap;
-}
-
+.heroTitleType .typeWord{display:inline-block;white-space:nowrap;}
 .heroTitleType .typeChar{
   display:inline-block;
-  opacity:1;
-  transform:none;
-  animation:none !important;
+  opacity:0;
+  transform:translateY(8px);
+  animation:heroTypeIn .18s ease-out forwards;
 }
+.heroTitleType .typeChar.shown{opacity:1;transform:none;}
+@keyframes heroTypeIn{to{opacity:1;transform:translateY(0);}}
+@keyframes heroCursorBlink{50%{opacity:0;}}
+@media(max-width:600px){
+  .heroTitleType{font-size:52px;margin:22px 0;}
+  }
+@media(prefers-reduced-motion:reduce){
+  .heroTitleType .typeChar{animation:none;opacity:1;transform:none;}
+  }
 
-.heroTitleType .typeChar.shown{
-  opacity:1 !important;
-  transform:none !important;
-  animation:none !important;
+
+/* Hero typewriter: title appears after the opening identity screen. */
+.heroTitleType{visibility:hidden;}
+.heroTitleType.typingStarted{visibility:visible;}
+.heroTitleType .typeChar{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(8px);
+  animation:heroTypeIn .18s ease-out forwards;
 }
-
+.heroTitleType .typeChar.shown{opacity:1;transform:none;}
 .heroTypeCursor{
   display:inline-block;
   width:4px;
@@ -1605,38 +1609,17 @@ html.light-theme header.nav .links.open a.active{
   vertical-align:-.03em;
   background:var(--cyan);
   border-radius:2px;
-  box-shadow:
-    0 0 10px var(--cyan),
-    0 0 24px rgba(57,216,255,.72),
-    0 0 42px rgba(57,216,255,.28);
+  box-shadow:0 0 10px var(--cyan),0 0 24px rgba(57,216,255,.72),0 0 42px rgba(57,216,255,.28);
   animation:heroCursorBlink .68s steps(1,end) infinite;
 }
-
-@keyframes heroCursorBlink{
-  50%{opacity:0;}
-}
-
+@keyframes heroTypeIn{to{opacity:1;transform:translateY(0);}}
+@keyframes heroCursorBlink{50%{opacity:0;}}
 @media(max-width:600px){
-  .heroTitleType{
-    font-size:52px;
-    margin:22px 0;
-  }
-  .heroTypeCursor{
-    width:3px;
-    margin-left:6px;
-  }
+  .heroTypeCursor{width:3px;margin-left:6px;}
 }
-
 @media(prefers-reduced-motion:reduce){
-  .heroTitleType .typeChar{
-    animation:none !important;
-    opacity:1 !important;
-    transform:none !important;
-  }
-  .heroTypeCursor{
-    animation:none !important;
-    opacity:1 !important;
-  }
+  .heroTitleType .typeChar{animation:none;opacity:1;transform:none;}
+  .heroTypeCursor{animation:none;opacity:1;}
 }
 
 
@@ -1782,9 +1765,387 @@ html.skipHomeIntro .heroTitleType{visibility:visible !important;}
   .luxVisual .heroPerson{top:10px !important;}
 }
 
-/* Smooth JS typewriter */
+
+/* =========================================================
+   MR VISUALCRAFT — FINAL SMOOTH MOTION PATCH
+   Keeps the existing design/effects, but removes jumpy
+   animation behavior and makes transforms GPU-friendly.
+   ========================================================= */
+
+/* Smooth, consistent transitions */
+:root{
+  --motion-fast:.22s;
+  --motion-med:.38s;
+  --motion-slow:.65s;
+  --motion-ease:cubic-bezier(.22,.61,.36,1);
+  --motion-smooth:cubic-bezier(.2,.75,.2,1);
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+*,
+*::before,
+*::after{
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* Only animate properties that stay smooth and cheap to render. */
+.btn,
+.card,
+.panel,
+.step,
+.luxService,
+.workCard,
+.socialBtn,
+.serviceIcon,
+.serviceArt,
+.workCard .visual,
+.portraitPanel img,
+.themeToggle,
+.links a,
+.socialRow a,
+.heroPerson{
+  transition:
+    transform var(--motion-med) var(--motion-smooth),
+    opacity var(--motion-med) ease,
+    filter var(--motion-med) ease,
+    box-shadow var(--motion-med) ease,
+    border-color var(--motion-med) ease,
+    background-color var(--motion-med) ease,
+    color var(--motion-med) ease;
+}
+
+/* GPU hints only for elements that actually animate. */
+.visualGlow,
+.portraitHalo,
+.portraitRings .ring,
+.orbitDot,
+.energyBeam,
+.energyBeam::after,
+.heroPerson,
+.runningTrack,
+.heroMarqueeTrack,
+.luxWorkGrid .workCard::after,
+.luxWorkGrid .workCard .visual::after,
+.premiumPanel::after,
+.portraitPanel::after,
+.ctaPanel::after,
+.typingIntro::before,
+.typingIntroInner{
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+/* Reveal animation: smooth instead of abrupt. */
+.reveal{
+  opacity:0;
+  transform:translate3d(0,18px,0);
+  transition:
+    opacity .72s cubic-bezier(.22,.61,.36,1),
+    transform .72s cubic-bezier(.22,.61,.36,1);
+  will-change:opacity,transform;
+}
+.reveal.in{
+  opacity:1;
+  transform:translate3d(0,0,0);
+}
+
+/* Smooth hero portrait float — no filter animation, avoiding flicker. */
+.luxVisual .heroPerson{
+  animation:mrvcPortraitFloat 6.2s cubic-bezier(.45,0,.55,1) infinite;
+  will-change:transform;
+}
+@keyframes mrvcPortraitFloat{
+  0%,100%{transform:translate3d(0,0,0)}
+  50%{transform:translate3d(0,-5px,0)}
+}
+
+/* Smooth ambient hero glow. */
+.visualGlow{
+  animation:mrvcGlow 7s cubic-bezier(.45,0,.55,1) infinite alternate;
+}
+@keyframes mrvcGlow{
+  0%{transform:scale(.97);opacity:.72}
+  100%{transform:scale(1.035);opacity:.94}
+}
+
+/* Smooth halo breathing. */
+.portraitHalo{
+  animation:mrvcHalo 6s cubic-bezier(.45,0,.55,1) infinite alternate;
+}
+@keyframes mrvcHalo{
+  0%{transform:scale(.975);opacity:.72}
+  100%{transform:scale(1.025);opacity:.96}
+}
+
+/* Smooth rotating rings. */
+.portraitRings .ringTwo{
+  animation:mrvcRingCW 22s linear infinite;
+  will-change:transform;
+}
+.portraitRings .ringThree{
+  animation:mrvcRingCCW 16s linear infinite;
+  will-change:transform;
+}
+@keyframes mrvcRingCW{
+  from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+  to{transform:translate3d(-50%,-50%,0) rotate(360deg)}
+}
+@keyframes mrvcRingCCW{
+  from{transform:translate3d(-50%,-50%,0) rotate(0deg)}
+  to{transform:translate3d(-50%,-50%,0) rotate(-360deg)}
+}
+
+/* Ring pulse: slower and softer so it doesn't look jumpy. */
+.portraitRings .ringOne{
+  animation:mrvcRingPulse 6s cubic-bezier(.45,0,.55,1) infinite;
+}
+@keyframes mrvcRingPulse{
+  0%,100%{
+    transform:translate3d(-50%,-50%,0) scale(.985);
+    opacity:.68;
+  }
+  50%{
+    transform:translate3d(-50%,-50%,0) scale(1.018);
+    opacity:.94;
+  }
+}
+
+/* Orbit dots: smooth float. */
+.dotOne,
+.dotTwo,
+.dotThree{
+  animation:mrvcDotFloat 5.5s cubic-bezier(.45,0,.55,1) infinite;
+}
+.dotTwo{animation-delay:-1.8s}
+.dotThree{animation-delay:-3s}
+@keyframes mrvcDotFloat{
+  0%,100%{
+    transform:translate3d(0,0,0);
+    opacity:.62;
+  }
+  50%{
+    transform:translate3d(8px,-10px,0);
+    opacity:1;
+  }
+}
+
+/* Energy beam: slower travel = smoother visual. */
+.energyBeam{
+  animation:mrvcBeam 8s cubic-bezier(.45,0,.55,1) infinite;
+}
+.energyBeam::after{
+  animation:mrvcBeamDot 8s linear infinite;
+}
+@keyframes mrvcBeam{
+  0%,100%{
+    opacity:.28;
+    transform:translate3d(-50%,-50%,0) rotate(-18deg) scale(.98);
+  }
+  50%{
+    opacity:.72;
+    transform:translate3d(-50%,-50%,0) rotate(-18deg) scale(1.02);
+  }
+}
+@keyframes mrvcBeamDot{
+  0%{left:3%;opacity:0}
+  15%{opacity:1}
+  80%{opacity:1}
+  100%{left:82%;opacity:0}
+}
+
+/* Project card motion: no sudden scaling. */
+.luxWorkGrid .workCard{
+  transition:
+    transform .48s var(--motion-smooth),
+    border-color .38s ease,
+    box-shadow .48s ease;
+}
+.luxWorkGrid .workCard:hover{
+  transform:translate3d(0,-7px,0) scale(1.008);
+}
+.luxWorkGrid .workCard .visual{
+  transition:
+    transform .55s var(--motion-smooth),
+    filter .45s ease;
+}
+.luxWorkGrid .workCard:hover .visual{
+  transform:scale(1.025);
+}
+.luxWorkGrid .workCard::after{
+  transition:left .95s var(--motion-smooth);
+}
+.luxWorkGrid .workCard .visual::after{
+  animation-duration:9s;
+}
+
+/* Service-card hover stays soft. */
+.luxService:hover{
+  transform:translate3d(0,-5px,0);
+}
+.luxService .serviceIcon,
+.luxService .serviceArt{
+  transition:
+    transform .4s var(--motion-smooth),
+    box-shadow .4s ease,
+    border-color .35s ease;
+}
+.luxService:hover .serviceIcon{
+  transform:translate3d(0,-2px,0) rotate(-2deg);
+}
+.luxService:hover .serviceArt{
+  transform:translate3d(0,-2px,0);
+}
+
+/* Ambient panel ring. */
+.premiumPanel::after,
+.portraitPanel::after,
+.ctaPanel::after{
+  animation:mrvcPanelOrb 9s cubic-bezier(.45,0,.55,1) infinite;
+}
+@keyframes mrvcPanelOrb{
+  0%,100%{
+    transform:translate3d(0,0,0);
+    opacity:.52;
+  }
+  50%{
+    transform:translate3d(-16px,12px,0);
+    opacity:.88;
+  }
+}
+
+/* CTA pulse — gentle, not flashing. */
+.ctaPanel .btn.primary{
+  animation:mrvcCtaPulse 4.5s cubic-bezier(.45,0,.55,1) infinite;
+}
+@keyframes mrvcCtaPulse{
+  0%,100%{
+    box-shadow:0 12px 35px rgba(199,255,40,.13);
+  }
+  50%{
+    box-shadow:0 14px 40px rgba(199,255,40,.20);
+  }
+}
+
+/* Running text stays constant-speed and smooth. */
+.runningTrack{
+  animation:mrvcMarqueeSmooth 28s linear infinite;
+  will-change:transform;
+}
+@keyframes mrvcMarqueeSmooth{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
+
+/* Hero marquee stays constant-speed. */
+.heroMarqueeTrack{
+  animation:mrvcHeroMarqueeSmooth 20s linear infinite;
+  will-change:transform;
+}
+@keyframes mrvcHeroMarqueeSmooth{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-33.3333%,0,0)}
+}
+
+/* =========================================================
+   TYPEWRITER — remove per-character CSS animation.
+   JavaScript should reveal characters one by one.
+   This prevents the old fade/translate animation from
+   fighting with the JS timing.
+   ========================================================= */
+.heroTitleType{
+  visibility:hidden;
+}
+.heroTitleType.typingStarted{
+  visibility:visible;
+}
+.heroTitleType .typeChar,
 .heroTitleType .typeChar.shown{
-  animation:none !important;
+  display:inline-block;
   opacity:1 !important;
   transform:none !important;
+  animation:none !important;
+  transition:none !important;
+}
+.heroTypeCursor{
+  animation:mrvcCursorBlink .7s steps(1,end) infinite;
+  will-change:opacity;
+}
+@keyframes mrvcCursorBlink{
+  0%,48%{opacity:1}
+  49%,100%{opacity:0}
+}
+
+/* Opening interface: smoother fade/scale. */
+.typingIntro{
+  transition:
+    opacity .8s cubic-bezier(.22,.61,.36,1),
+    visibility .8s linear;
+}
+.typingIntroInner{
+  transition:
+    transform .8s cubic-bezier(.22,.61,.36,1),
+    opacity .8s cubic-bezier(.22,.61,.36,1);
+}
+.typingIntro::before{
+  animation:mrvcIntroPulse 5s cubic-bezier(.45,0,.55,1) infinite alternate;
+}
+@keyframes mrvcIntroPulse{
+  from{transform:scale(1);opacity:.58}
+  to{transform:scale(1.045);opacity:.82}
+}
+
+/* Keep mobile effects lighter for stable rendering. */
+@media(max-width:700px){
+  .visualGlow{animation-duration:8s}
+  .portraitHalo{animation-duration:7s}
+  .portraitRings .ringTwo{animation-duration:28s}
+  .portraitRings .ringThree{animation-duration:21s}
+  .runningTrack{animation-duration:24s}
+  .heroMarqueeTrack{animation-duration:18s}
+  .luxWorkGrid .workCard:hover{
+    transform:translate3d(0,-4px,0);
+  }
+}
+
+/* Accessibility + battery/performance: respect reduced motion everywhere. */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001ms!important;
+    scroll-behavior:auto!important;
+  }
+
+  .reveal{
+    opacity:1!important;
+    transform:none!important;
+  }
+
+  .heroTitleType{
+    visibility:visible!important;
+  }
+
+  .heroTitleType .typeChar{
+    opacity:1!important;
+    transform:none!important;
+    animation:none!important;
+  }
+
+  .heroTypeCursor{
+    opacity:1!important;
+    animation:none!important;
+  }
+
+  .runningTrack,
+  .heroMarqueeTrack{
+    transform:none!important;
+  }
 }
