@@ -19,10 +19,8 @@
 
     if(!a) return;
 
-
     const raw =
       a.getAttribute('href') || '';
-
 
     if(
       !raw ||
@@ -31,11 +29,8 @@
       raw.startsWith('tel:') ||
       a.target === '_blank'
     ){
-
       return;
-
     }
-
 
     try{
 
@@ -45,7 +40,6 @@
           location.href
         );
 
-
       const isHome =
         u.origin === location.origin &&
         (
@@ -53,22 +47,18 @@
           u.pathname.endsWith('/index.html')
         );
 
-
       const onHome =
         location.pathname === '/' ||
         location.pathname.endsWith('/index.html');
-
 
       if(isHome && !onHome){
 
         e.preventDefault();
 
-
         const target =
           u.pathname +
           '?skipHomeIntro=1' +
           (u.hash || '');
-
 
         location.href =
           target;
@@ -94,7 +84,6 @@
       'mrvc_theme'
     );
 
-
   if(saved === 'light'){
 
     document.documentElement.classList.add(
@@ -103,7 +92,6 @@
 
   }
 
-
   function mountThemeToggle(){
 
     const actions =
@@ -111,59 +99,47 @@
         '.navActions'
       );
 
-
     if(
       !actions ||
       actions.querySelector(
         '.themeToggle'
       )
     ){
-
       return;
-
     }
-
 
     const b =
       document.createElement(
         'button'
       );
 
-
     b.className =
       'themeToggle';
 
-
     b.type =
       'button';
-
 
     b.setAttribute(
       'aria-label',
       'Toggle dark and light theme'
     );
 
-
     b.title =
       'Toggle dark / light mode';
-
 
     b.innerHTML =
       '<span class="moon" aria-hidden="true">☾</span>' +
       '<span class="sun" aria-hidden="true">☀</span>';
-
 
     const first =
       actions.querySelector(
         '.btn'
       );
 
-
     actions.insertBefore(
       b,
       first || actions.firstChild
     );
-
 
     b.addEventListener(
       'click',
@@ -173,7 +149,6 @@
           document.documentElement.classList.toggle(
             'light-theme'
           );
-
 
         localStorage.setItem(
           'mrvc_theme',
@@ -186,7 +161,6 @@
     );
 
   }
-
 
   if(
     document.readyState ===
@@ -216,7 +190,6 @@
 
   const $ =
     s => document.querySelector(s);
-
 
   const path =
     location.pathname.replace(
@@ -261,7 +234,6 @@
 
     });
 
-
   if(active){
 
     active.classList.add(
@@ -281,15 +253,12 @@
       'div'
     );
 
-
   glow.className =
     'cursorGlow';
-
 
   document.body.appendChild(
     glow
   );
-
 
   document.addEventListener(
     'pointermove',
@@ -297,7 +266,6 @@
 
       glow.style.left =
         e.clientX + 'px';
-
 
       glow.style.top =
         e.clientY + 'px';
@@ -337,7 +305,6 @@
       }
     );
 
-
   document
     .querySelectorAll(
       '.reveal,.card,.panel,.step,.pageHero,.section'
@@ -349,12 +316,10 @@
           'reveal'
         );
 
-
         e.style.transitionDelay =
           (
             Math.min(i,8) * 45
           ) + 'ms';
-
 
         obs.observe(
           e
@@ -372,10 +337,8 @@
   const ham =
     $('.hamb');
 
-
   const nav =
     $('.links');
-
 
   if(ham && nav){
 
@@ -384,13 +347,11 @@
       'false'
     );
 
-
     function closeMenu(){
 
       nav.classList.remove(
         'open'
       );
-
 
       ham.setAttribute(
         'aria-expanded',
@@ -399,7 +360,6 @@
 
     }
 
-
     ham.addEventListener(
       'click',
       e => {
@@ -407,12 +367,10 @@
         e.preventDefault();
         e.stopPropagation();
 
-
         const isOpen =
           nav.classList.toggle(
             'open'
           );
-
 
         ham.setAttribute(
           'aria-expanded',
@@ -423,7 +381,6 @@
 
       }
     );
-
 
     nav.addEventListener(
       'click',
@@ -439,7 +396,6 @@
 
       }
     );
-
 
     document.addEventListener(
       'click',
@@ -457,7 +413,6 @@
 
       }
     );
-
 
     window.addEventListener(
       'resize',
@@ -485,12 +440,10 @@
   const form =
     $('#contactForm');
 
-
   if(form){
 
     const status =
       $('#formStatus');
-
 
     const pending =
       () => {
@@ -503,7 +456,6 @@
 
       };
 
-
     const save =
       x => {
 
@@ -514,15 +466,12 @@
 
       };
 
-
     async function flush(){
 
       let q =
         pending();
 
-
       if(!q.length) return;
-
 
       for(
         const item of [...q]
@@ -560,7 +509,6 @@
 
             );
 
-
           if(r.ok){
 
             q =
@@ -579,21 +527,17 @@
 
       }
 
-
       save(q);
 
     }
 
-
     flush();
-
 
     form.addEventListener(
       'submit',
       async e => {
 
         e.preventDefault();
-
 
         const x =
           Object.fromEntries(
@@ -602,10 +546,8 @@
             ).entries()
           );
 
-
         status.textContent =
           'Sending…';
-
 
         try{
 
@@ -639,17 +581,14 @@
 
             );
 
-
           if(!r.ok){
 
             throw new Error();
 
           }
 
-
           status.textContent =
             'Message sent successfully.';
-
 
           form.reset();
 
@@ -658,12 +597,9 @@
           const q =
             pending();
 
-
           q.push(x);
 
-
           save(q);
-
 
           status.textContent =
             'Saved offline — it will sync when the backend is available.';
@@ -683,7 +619,6 @@
 
   const admin =
     $('#adminList');
-
 
   if(admin){
 
@@ -821,11 +756,9 @@ const slides =
     '#slides'
   );
 
-
 if(slides){
 
   let i = 0;
-
 
   const dots =
     [
@@ -834,17 +767,14 @@ if(slides){
       )
     ];
 
-
   const go =
     n => {
 
       i =
         (n + 3) % 3;
 
-
       slides.style.transform =
         `translateX(-${i * 100}%)`;
-
 
       dots.forEach(
         (d,k) => {
@@ -859,7 +789,6 @@ if(slides){
 
     };
 
-
   dots.forEach(
     d => {
 
@@ -871,18 +800,15 @@ if(slides){
     }
   );
 
-
   const prev =
     document.querySelector(
       '#prev'
     );
 
-
   const next =
     document.querySelector(
       '#next'
     );
-
 
   if(prev){
 
@@ -893,7 +819,6 @@ if(slides){
 
   }
 
-
   if(next){
 
     next.onclick =
@@ -902,7 +827,6 @@ if(slides){
       );
 
   }
-
 
   setInterval(
     () => go(
@@ -974,7 +898,6 @@ document.addEventListener(
               const r =
                 card.getBoundingClientRect();
 
-
               card.style.setProperty(
                 '--mx',
 
@@ -988,7 +911,6 @@ document.addEventListener(
 
                 ) + '%'
               );
-
 
               card.style.setProperty(
                 '--my',
@@ -1027,44 +949,61 @@ document.addEventListener(
       'typingIntro'
     );
 
-
   const introText =
     document.getElementById(
       'typingText'
     );
-
 
   const hero =
     document.querySelector(
       '.heroTitleType'
     );
 
+  /*
+     IMPORTANT:
+     Agar kisi page par opening intro ya Hero maujood nahi,
+     to baqi website JS normal tarah se kaam karegi.
+  */
 
   if(
-    !intro ||
-    !introText ||
     !hero
   ){
-
     return;
-
   }
 
 
 
   /* ---------------------------------------------------------
      HERO TEXT
+     ---------------------------------------------------------
+
+     FINAL TEXT:
+
+     Crafting Digital
+     Experiences.
+
      --------------------------------------------------------- */
 
   const heroParts = [
+
     {
-      text: 'Freelance Creative',
-      className: 'white'
+      text: 'Crafting',
+      className: 'white',
+      breakAfter: false
     },
+
     {
-      text: 'Designer & Developer',
-      className: 'lime'
+      text: 'Digital',
+      className: 'lime',
+      breakAfter: true
+    },
+
+    {
+      text: 'Experiences.',
+      className: 'white',
+      breakAfter: false
     }
+
   ];
 
 
@@ -1084,15 +1023,14 @@ document.addEventListener(
      NAVIGATION TYPE
      --------------------------------------------------------- */
 
-  const nav =
+  const navEntry =
     performance.getEntriesByType(
       'navigation'
     )[0];
 
-
   const navType =
-    nav
-      ? nav.type
+    navEntry
+      ? navEntry.type
       : 'navigate';
 
 
@@ -1104,10 +1042,8 @@ document.addEventListener(
   const ref =
     document.referrer || '';
 
-
   let sameOriginRef =
     false;
-
 
   try{
 
@@ -1132,12 +1068,10 @@ document.addEventListener(
       window.location.search
     );
 
-
   const skipHomeIntro =
     params.get(
       'skipHomeIntro'
     ) === '1';
-
 
   if(skipHomeIntro){
 
@@ -1175,25 +1109,21 @@ document.addEventListener(
 
 
   /* =========================================================
-     BUILD HERO
+     BUILD HERO EMPTY
      ========================================================= */
 
   function buildHeroEmpty(){
 
     hero.innerHTML = '';
 
-
     hero.style.visibility =
       'visible';
-
 
     hero.style.opacity =
       '1';
 
-
     hero.dataset.typingStarted =
       '1';
-
 
     hero.classList.add(
       'typingStarted'
@@ -1210,35 +1140,45 @@ document.addEventListener(
   function showHeroImmediately(){
 
     hero.innerHTML = `
-
-      <span class="typeWord white">
-        Freelance Creative
-      </span>
-
-      <br>
-
-      <span class="typeWord lime">
-        Designer &amp; Developer
-      </span>
-
+      <span class="typeWord white">Crafting</span>
+      <span class="typeWord lime">Digital</span><br>
+      <span class="typeWord white">Experiences.</span>
     `;
-
 
     hero.style.visibility =
       'visible';
 
-
     hero.style.opacity =
       '1';
-
 
     hero.dataset.typingStarted =
       '1';
 
-
     hero.classList.add(
       'typingStarted',
       'typingDone'
+    );
+
+    /*
+       CSS ke hidden/typewriter rules ko override karne
+       ke liye inline visibility/opacity already set hain.
+    */
+
+    hero.querySelectorAll(
+      '.typeWord'
+    ).forEach(
+      word => {
+
+        word.style.visibility =
+          'visible';
+
+        word.style.opacity =
+          '1';
+
+        word.style.transform =
+          'none';
+
+      }
     );
 
   }
@@ -1251,10 +1191,13 @@ document.addEventListener(
 
   function finishIntro(){
 
-    intro.classList.add(
-      'hide'
-    );
+    if(intro){
 
+      intro.classList.add(
+        'hide'
+      );
+
+    }
 
     window.dispatchEvent(
       new Event(
@@ -1281,48 +1224,57 @@ document.addEventListener(
 
     }
 
-
     buildHeroEmpty();
-
 
     const words =
       [];
 
-
     heroParts.forEach(
-      part => {
+      (part, index) => {
 
         const span =
           document.createElement(
             'span'
           );
 
-
         span.className =
           'typeWord ' +
           part.className;
-
 
         hero.appendChild(
           span
         );
 
-
         words.push(
           span
         );
 
+        /*
+           Digital ke baad line break.
+           Crafting + Digital same line.
+        */
 
-        if(
-          part !==
-          heroParts[
-            heroParts.length - 1
-          ]
-        ){
+        if(part.breakAfter){
 
           hero.appendChild(
             document.createElement(
               'br'
+            )
+          );
+
+        }else if(
+          index <
+          heroParts.length - 1
+        ){
+
+          /*
+             Crafting aur Digital ke darmiyan
+             normal space.
+          */
+
+          hero.appendChild(
+            document.createTextNode(
+              ' '
             )
           );
 
@@ -1345,14 +1297,18 @@ document.addEventListener(
           word.textContent =
             heroParts[index].text;
 
+          word.style.visibility =
+            'visible';
+
+          word.style.opacity =
+            '1';
+
         }
       );
-
 
       hero.classList.add(
         'typingDone'
       );
-
 
       return;
 
@@ -1364,11 +1320,15 @@ document.addEventListener(
        TYPE CHARACTER BY CHARACTER
        ------------------------------------------------------- */
 
-    let partIndex = 0;
+    let partIndex =
+      0;
 
-    let charIndex = 0;
+    let charIndex =
+      0;
 
-    const speed = 65;
+    const speed =
+      65;
+
 
 
     function typeNext(){
@@ -1382,6 +1342,17 @@ document.addEventListener(
           'typingDone'
         );
 
+        /*
+           Final safety check:
+           Hero ko visible rakho.
+        */
+
+        hero.style.visibility =
+          'visible';
+
+        hero.style.opacity =
+          '1';
+
         return;
 
       }
@@ -1389,7 +1360,6 @@ document.addEventListener(
 
       const currentWord =
         words[partIndex];
-
 
       const currentText =
         heroParts[
@@ -1407,37 +1377,31 @@ document.addEventListener(
             'span'
           );
 
-
         char.className =
           'typeChar shown';
-
 
         char.textContent =
           currentText.charAt(
             charIndex
           );
 
-
         currentWord.appendChild(
           char
         );
 
-
         charIndex++;
-
 
         setTimeout(
           typeNext,
           speed
         );
 
-
       }else{
 
         partIndex++;
 
-        charIndex = 0;
-
+        charIndex =
+          0;
 
         setTimeout(
           typeNext,
@@ -1456,6 +1420,24 @@ document.addEventListener(
 
 
   /* =========================================================
+     NO INTRO ELEMENT
+     =========================================================
+
+     Agar kisi page par typingIntro nahi hai,
+     Hero ko direct show kar do.
+     ========================================================= */
+
+  if(!intro || !introText){
+
+    showHeroImmediately();
+
+    return;
+
+  }
+
+
+
+  /* =========================================================
      INTERNAL HOME NAVIGATION
      ========================================================= */
 
@@ -1465,9 +1447,7 @@ document.addEventListener(
       'hide'
     );
 
-
     showHeroImmediately();
-
 
     return;
 
@@ -1484,12 +1464,10 @@ document.addEventListener(
     introText.textContent =
       introLine;
 
-
     setTimeout(
       () => {
 
         finishIntro();
-
 
         setTimeout(
           startHeroTyping,
@@ -1499,7 +1477,6 @@ document.addEventListener(
       },
       1700
     );
-
 
     return;
 
@@ -1511,20 +1488,19 @@ document.addEventListener(
      OPENING INTRO TYPEWRITER
      ========================================================= */
 
-  let i = 0;
-
+  let introIndex =
+    0;
 
   function typeIntro(){
 
     introText.textContent =
       introLine.slice(
         0,
-        i++
+        introIndex++
       );
 
-
     if(
-      i <=
+      introIndex <=
       introLine.length
     ){
 
@@ -1539,7 +1515,6 @@ document.addEventListener(
         () => {
 
           finishIntro();
-
 
           setTimeout(
             startHeroTyping,
