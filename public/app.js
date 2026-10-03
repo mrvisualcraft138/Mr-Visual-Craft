@@ -645,14 +645,86 @@ document.addEventListener(
   const introLine='UBAIDULLAH  •  DESIGN  •  DIGITAL  •  AI';
 
   const showHeroImmediately=()=>{
-    hero.querySelectorAll('.heroTypeCursor').forEach(x=>x.remove());
-    hero.querySelectorAll('.typeChar').forEach(x=>{
-      x.classList.add('shown');
-      x.style.animation='none';
+  hero.querySelectorAll('.heroTypeCursor').forEach(x=>x.remove());
+
+  hero.querySelectorAll('.typeWord').forEach((part,i)=>{
+    const words=['Crafting','Digital','Experiences.'];
+    part.textContent=words[i]||'';
+  });
+
+  hero.dataset.typingStarted='1';
+  hero.classList.add('typingStarted','typingDone');
+};
+
+const startHeroTyping=()=>{
+  if(hero.dataset.typingStarted==='1') return;
+  hero.dataset.typingStarted='1';
+
+  const parts=[...hero.querySelectorAll('.typeWord')];
+  const speed=58;
+  const pauseBetweenWords=90;
+
+  hero.querySelectorAll('.heroTypeCursor').forEach(x=>x.remove());
+
+  parts.forEach(part=>part.textContent='');
+
+  const finalPart=parts[parts.length-1];
+
+  const cursor=document.createElement('span');
+  cursor.className='heroTypeCursor';
+  cursor.setAttribute('aria-hidden','true');
+
+  finalPart.appendChild(cursor);
+  hero.classList.add('typingStarted');
+
+  if(reduce){
+    const words=['Crafting','Digital','Experiences.'];
+
+    parts.forEach((part,i)=>{
+      part.textContent=words[i]||'';
     });
-    hero.dataset.typingStarted='1';
-    hero.classList.add('typingStarted','typingDone');
+
+    finalPart.appendChild(cursor);
+    hero.classList.add('typingDone');
+    return;
+  }
+
+  const words=['Crafting','Digital','Experiences.'];
+
+  let partIndex=0;
+  let charIndex=0;
+
+  const typeNext=()=>{
+    if(partIndex>=parts.length){
+      hero.classList.add('typingDone');
+      return;
+    }
+
+    const part=parts[partIndex];
+    const text=words[partIndex]||'';
+
+    if(charIndex<text.length){
+      const span=document.createElement('span');
+
+      span.className='typeChar shown';
+      span.textContent=text[charIndex++];
+
+      part.insertBefore(span,cursor);
+
+      if(partIndex===parts.length-1){
+        part.appendChild(cursor);
+      }
+
+      setTimeout(typeNext,speed);
+    }else{
+      charIndex=0;
+      partIndex++;
+      setTimeout(typeNext,pauseBetweenWords);
+    }
   };
+
+  typeNext();
+};
 
   const finishIntro=()=>{
     intro.classList.add('hide');
